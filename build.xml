@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+
+<!--
+  - Copyright (C) Bernhard Seybold. All rights reserved.
+  -
+  - This software is published under the terms of the LGPL Software License,
+  - a copy of which has been included with this distribution in the LICENSE.txt
+  - file.
+  -
+  - THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+  - WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  - OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  -
+  - $Id: build.xml,v 1.1 2002/12/08 13:29:35 BerniMan Exp $
+  -->
+
+<project name="Chesspresso" basedir="." default="all">
+    
+    <!--================================================================================
+      Properties
+      ================================================================================-->
+
+    <target name="init">
+        <!-- read system environment variables -->
+        <property environment="env" />
+
+        <!-- timestamp -->
+        <tstamp>
+          <format property="STAMP" pattern="yyyy-MM-dd HH:mm:ss"/>
+        </tstamp>
+
+        <property name="app.name" value="Chesspresso-lib" />
+        <property name="author.name" value="Bernhard Seybold" />        
+
+        <property name="build.dir" value="classes" />
+        <property name="testBuild.dir" value="testclasses" />
+        <property name="lib.dir" value="lib" />
+        <property name="doc.dir" value="doc" />
+        <property name="src.dir" value="src" />
+        <property name="relsrc.dir" value="srcrel" />
+        <property name="testSrc.dir" value="test" />
+        
+        <property name="junit.home" value="${env.JUNIT_HOME}" />
+
+        <property name="compileClasspath" value="" />
+        <property name="testCompileClasspath" value="${build.dir};${junit.home}/junit.jar" />
+        <property name="testRunClasspath" value="${build.dir};${testBuild.dir};${junit.home}/junit.jar" />
+        <property name="packages" value="chesspresso.*" />
+        
+        <property name="mainTestClass" value="chesspresso.AllTests" />
+        
+    </target>
+
+
+    <!--================================================================================
+    Top level build targets
+    ================================================================================-->
+
+    <target name="all" depends="libs" />
+
+    <target name="build" depends="clean,all" />
+
+    <target name="clean" depends="init">
+        <delete dir="${build.dir}" />
+        <delete dir="${testBuild.dir}" />
+        <delete dir="${lib.dir}" />
+        <delete dir="${doc.dir}" />
+    </target>
+
+
+    <!--================================================================================
+      Execution targets
+      ================================================================================-->
+    
+    <target name="runTests" depends="compile">
+        <java classpath="${testRunClasspath}" classname="${mainTestClass}" fork="yes">
+        </java>
+    </target>    
+
+    
+    <!--================================================================================
+      Distribution targets
+      ================================================================================-->
+
+    <target name="release" depends="libs,doc" >
+        <fail unless="app.version" message="app.version not set"/>
+        <property name="pref" value="${app.name}-${app.version}" />
+        <property name="stamp" value="${now}" />
+        <zip destfile="${lib.dir}/${app.name}-${app.version}.zip">
+          <zipfileset dir="${relsrc.dir}" prefix="${pref}"/>
+          <zipfileset dir="${lib.dir}" includes="${app.name}.jar" prefix="${pref}"/>
+          <zipfileset dir="${doc.dir}" prefix="${pref}/docs"/>
+        </zip>
+        <zip destfile="${lib.dir}/${app.name}-${app.version}-src.zip">
+          <zipfileset dir="${relsrc.dir}" prefix="${pref}"/>
+          <zipfileset dir="." includes="build.xml" prefix="${pref}"/>
+          <zipfileset dir="${src.dir}" excludes="**/.nbattrs" prefix="${pref}/src"/>
+          <zipfileset dir="${testSrc.dir}" excludes="**/.nbattrs" prefix="${pref}/test"/>
+        </zip>
+        <zip destfile="${lib.dir}/${app.name}-${app.version}-test.zip">
+          <zipfileset dir="${relsrc.dir}" prefix="${pref}"/>
+          <zipfileset dir="${lib.dir}" includes="${app.name}-test.jar" prefix="${pref}"/>
+        </zip>
+    </target>
+      
+    <target name="libs" depends="classlib,testlib" />
+    
+    <target name="classlib" depends="compile,makeLibDir">
+        <jar jarfile="${lib.dir}/${app.name}.jar" basedir="${build.dir}" >
+          <manifest>
+            <attribute name="Built-By" value="${author.name}"/>
+            <section name="chesspresso/">
+              <attribute name="Specification-Title" value="${app.name}"/>
+              <attribute name="Specification-Version" value="${app.version}"/>
+              <attribute name="Specification-Vendor" value="${author.name}"/>
+              <attribute name="Implementation-Title" value="${app.name}"/>
+              <attribute name="Implementation-Version" value="${app.version}  ${STAMP}"/>
+              <attribute name="Implementation-Vendor" value="${author.name}"/>
+            </section>
+          </manifest>
+        </jar>
+        <signjar jar="${lib.dir}/${app.name}.jar" alias="chesspresso" storepass="changeit" />
+    </target>
+
+    <target name="testlib" depends="compile,makeLibDir">
+        <jar jarfile="${lib.dir}/${app.name}-test.jar" basedir="${testBuild.dir}">
+          <manifest>
+            <attribute name="Built-By" value="${author.name}"/>
+            <section name="chesspresso/">
+              <attribute name="Specification-Title" value="${app.name} Tests"/>
+              <attribute name="Specification-Version" value="${app.version}"/>
+              <attribute name="Specification-Vendor" value="${author.name}"/>
+              <attribute name="Implementation-Title" value="${app.name} Tests"/>
+              <attribute name="Implementation-Version" value="${app.version}  ${STAMP}"/>
+              <attribute name="Implementation-Vendor" value="${author.name}"/>
+            </section>
+          </manifest>
+        </jar>
+        <signjar jar="${lib.dir}/${app.name}-test.jar" alias="chesspresso" storepass="changeit" />
+    </target>
+
+
+    <!--================================================================================
+      Compile targets
+      ================================================================================-->
+
+    <target name="compile" depends="compileOnly,copyAddons" />
+
+    <target name="compileOnly" depends="makeBuildDir">
+        <javac srcdir="${src.dir}" destdir="${build.dir}" deprecation="on" debug="on" source="1.4" />
+        <javac classpath="${testCompileClasspath}" srcdir="${testSrc.dir}" destdir="${testBuild.dir}" deprecation="on" debug="on" source="1.4" />
+    </target>
+
+    <target name="copyAddons" depends="makeBuildDir">
+        <copy todir="${build.dir}" preservelastmodified="yes" filtering="false" >
+            <fileset dir="${src.dir}" >
+                <exclude name="**/*.java" />
+                <exclude name="**/*.form" />
+                <exclude name="**/*.psp" />
+                <exclude name="**/*.psd" />
+                <exclude name="**/.nbattrs" />
+                <exclude name="**/*_" />
+                <exclude name="**/_*" />
+                <exclude name="**/*_/**/" />
+                <exclude name="**/CVS/*" />
+            </fileset>
+        </copy>
+        <copy todir="${testBuild.dir}" preservelastmodified="yes" filtering="false" >
+            <fileset dir="${testSrc.dir}" >
+                <exclude name="**/*.java" />
+                <exclude name="**/*.form" />
+                <exclude name="**/.nbattrs" />
+                <exclude name="**/*_" />
+                <exclude name="**/_*" />
+                <exclude name="**/*_/**/" />
+                <exclude name="**/CVS/*" />
+            </fileset>
+        </copy>
+    </target>
+
+
+    <!--================================================================================
+      Documentation targets
+      ================================================================================-->
+
+    <target name="doc" depends="makeLibDir">
+        <mkdir dir="${lib.dir}" />
+        <javadoc
+            packagenames="${packages}"
+            destdir="${doc.dir}"
+            sourcepath="${src.dir}"
+            author="true"
+            package="true"
+            use="true"
+            classpath="${classpath}"
+            windowtitle="${app.name}"
+            doctitle="${app.name}"
+        />
+    </target>
+
+
+    <!--================================================================================
+      Preparation targets
+      ================================================================================-->
+
+    <target name="makeBuildDir" depends="init">
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${testBuild.dir}" />
+    </target>
+
+    <target name="makeLibDir" depends="init">
+        <mkdir dir="${lib.dir}" />
+    </target>
+
+</project>
