@@ -42,9 +42,7 @@ public class AllTests extends TestCase
     
     public static void main(java.lang.String[] args)
     {
-        if (args != null && args.length > 0 && "-ui".equals(args[0])) {
-            junit.swingui.TestRunner.run(AllTests.class);
-        } else if (args.length == 0) {
+        if (args.length == 0) {
             junit.textui.TestRunner.run(suite());
         } else {
             System.out.println("Usage: Alltests [-ui]");
