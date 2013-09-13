@@ -21,16 +21,18 @@
         <td valign="top">
           <table cellspacing="0" cellpadding="0"><thead></thead>
             <tbody>
+              [#assign imageCount = 0 /]
               [#list imagePathsPerRow as imagePathsForRow]
               <tr>
                 [#list imagePathsForRow as imagePath]
-                  <td><img src="${imagePath}" /></td>
+                  <td><img id="chesspresso_square_image_${imageCount}" src="${imagePath}" /></td>
+                  [#assign imageCount = imageCount + 1 /]
                 [/#list]
               </tr>
               [/#list]
             </tbody>
           </table>
-          <center><form name="tapecontrol">
+          <center><form name="chesspresso_tapecontrol">
             <input type=button value=" Start " onClick="chesspresso.gotoStart();" onDblClick="chesspresso.gotoStart();">
             <input type=button value=" &lt; " onClick="chesspresso.goBackward();" onDblClick="chesspresso.goBackward();">
             <input type=button value=" &gt; " onClick="chesspresso.goForward();" onDblClick="chesspresso.goForward();">
@@ -50,7 +52,7 @@
               [#assign kind = "main" /]
             [/#if]
 
-            <a name="${ply.moveNumber}" class="${kind}"
+            <a id="chesspresso_ply_link_${ply.moveNumber}" class="chesspresso_ply chesspresso_${kind}"
              href="javascript:chesspresso.go(${ply.moveNumber})">
               [#if ply.showMoveNumber]
                 ${ply.plyNumber / 2 + 1}.
@@ -64,7 +66,7 @@
             </a>
 
             [#if ply.comment??]
-              <span class="comment">${ply.comment}</span>
+              <span class="chesspresso_comment">${ply.comment}</span>
             [/#if]
 
             [#if ply.lineEnd]&nbsp;[/#if]
@@ -76,6 +78,8 @@
       </tr>
     </tbody>
   </table>
+
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 
   [#noescape]
   <script type="text/javascript">
@@ -120,16 +124,33 @@
       this.lastMoveNumber = ${lastMoveNumber};
     };
 
+    Chesspresso.prototype.highlightPly = function (selected) {
+      if (this.moveNumber > 0) {
+        var element = $('#chesspresso_ply_link_' + (this.moveNumber - 1));
+
+        if (selected) {
+          element.removeClass('chesspresso_deselected_ply_link');
+          element.addClass('chesspresso_selected_ply_link');
+        } else {
+          element.removeClass('chesspresso_selected_ply_link');
+          element.addClass('chesspresso_deselected_ply_link');
+        }
+      }
+    }
+
     Chesspresso.prototype.go = function (num) {
-      if (this.moveNumber>0) {window.document.anchors[this.moveNumber-1].style.background="white"; window.document.anchors[this.moveNumber-1].style.color="black";}
+      this.highlightPly(false);
+
       if (num<0) this.moveNumber=0;
       else if (num > this.lastMoveNumber) this.moveNumber = this.lastMoveNumber;
-      else this.moveNumber=num;
+      else this.moveNumber = num;
       for(i=0;i<64;i++){
         if ((Math.floor(i/8)%2)==(i%2)) offset=0; else offset=13;
-        window.document.images[i].src=this.imgs[this.sq[num][i]+offset];
+        $('#chesspresso_square_image_' + i).attr('src', this.imgs[this.sq[num][i]+offset]);
       }
-      if (this.moveNumber>0) {window.document.anchors[this.moveNumber-1].style.background="black"; window.document.anchors[this.moveNumber-1].style.color="white";}
+
+      this.highlightPly(true);
+        //window.document.anchors[this.moveNumber-1].style.background="black"; window.document.anchors[this.moveNumber-1].style.color="white";}
     }
     Chesspresso.prototype.gotoStart = function() {this.go(0);}
     Chesspresso.prototype.goBackward = function() {this.go(this.last[this.moveNumber]);}
