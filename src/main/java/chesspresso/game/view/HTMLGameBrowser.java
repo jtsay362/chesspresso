@@ -34,20 +34,10 @@ import chesspresso.position.*;
  * Producer for HTML pages displaying a game.
  *
  * @author Bernhard Seybold
+ * @author Jeff Tsay
  * @version $Revision: 1.3 $
  */
 public class HTMLGameBrowser implements GameListener {
-
-  //private StringBuilder m_moves;
-  private List<PlyModel> m_plyModels;
-  private boolean m_isLineStart = false;
-  private boolean m_isLineEnd = false;
-  private List<int[]> m_posData;
-  private List<Integer> m_lastData;
-  private Game m_game;
-  private int m_moveNumber;
-  private boolean m_showMoveNumber;
-  private int[] m_lasts;
 
   //======================================================================
   // GameListener Methods
@@ -65,19 +55,7 @@ public class HTMLGameBrowser implements GameListener {
     m_showMoveNumber = true;
   }
 
-  private void addPosData(ImmutablePosition pos) {
-    final int[] data = new int[Chess.NUM_OF_ROWS * Chess.NUM_OF_COLS];
-    int j = 0;
-    for (int row = Chess.NUM_OF_ROWS - 1; row >= 0; row--) {
-      for (int col = 0; col < Chess.NUM_OF_COLS; col++) {
-        int sqi = Chess.coorToSqi(col, row);
-        data[j++] = pos.getStone(sqi) - Chess.MIN_STONE;
-      }
-    }
-
-    m_posData.add(data);
-  }
-
+  @Override
   public void notifyMove(Move move, short[] nags, String comment, int plyNumber, int level) {
     ImmutablePosition pos = m_game.getPosition();
 
@@ -112,15 +90,8 @@ public class HTMLGameBrowser implements GameListener {
     m_lasts[level] = m_moveNumber;
 
     m_moveNumber++;
-
   }
 
-  //======================================================================
-
-  private String[] m_wimgs;
-  private String[] m_bimgs;
-  private String m_imagePrefix;
-  private String m_styleFilename;
 
   //======================================================================
 
@@ -186,16 +157,6 @@ public class HTMLGameBrowser implements GameListener {
     } else {
       m_bimgs[stone - Chess.MIN_STONE] = name;
     }
-  }
-
-  /**
-   * Returns the name of the image.
-   *
-   * @param stone       the stonbe displayed
-   * @param whiteSquare whether or not the square is white
-   */
-  private String getImageForStone(int stone, boolean isWhite) {
-    return m_imagePrefix + (isWhite ? m_wimgs[stone - Chess.MIN_STONE] : m_bimgs[stone - Chess.MIN_STONE]);
   }
 
   //======================================================================
@@ -296,7 +257,7 @@ public class HTMLGameBrowser implements GameListener {
   }
 
   private Configuration makeConfiguration(boolean debugMode) {
-    Configuration config = new Configuration();
+    final Configuration config = new Configuration();
 
     config.setIncompatibleImprovements(new Version(2, 3, 20));
     config.setClassForTemplateLoading(HTMLGameBrowser.class, "freemarker");
@@ -323,9 +284,9 @@ public class HTMLGameBrowser implements GameListener {
     try {
       chesspresso.pgn.PGNReader pgn = new chesspresso.pgn.PGNReader(
        new FileReader(args[0]), "game");
-      Game game = pgn.parseGame();
+      final Game game = pgn.parseGame();
 
-      HTMLGameBrowser html = new HTMLGameBrowser();
+      final HTMLGameBrowser html = new HTMLGameBrowser();
       html.produceHTML(System.out, game);
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -434,4 +395,41 @@ public class HTMLGameBrowser implements GameListener {
        '}';
     }
   }
+
+  /**
+   * Returns the name of the image.
+   *
+   * @param stone       the stone displayed
+   * @param whiteSquare whether or not the square is white
+   */
+  private String getImageForStone(int stone, boolean isWhite) {
+    return m_imagePrefix + (isWhite ? m_wimgs[stone - Chess.MIN_STONE] : m_bimgs[stone - Chess.MIN_STONE]);
+  }
+
+  private void addPosData(ImmutablePosition pos) {
+    final int[] data = new int[Chess.NUM_OF_ROWS * Chess.NUM_OF_COLS];
+    int j = 0;
+    for (int row = Chess.NUM_OF_ROWS - 1; row >= 0; row--) {
+      for (int col = 0; col < Chess.NUM_OF_COLS; col++) {
+        int sqi = Chess.coorToSqi(col, row);
+        data[j++] = pos.getStone(sqi) - Chess.MIN_STONE;
+      }
+    }
+
+    m_posData.add(data);
+  }
+
+  private List<PlyModel> m_plyModels;
+  private boolean m_isLineStart = false;
+  private boolean m_isLineEnd = false;
+  private List<int[]> m_posData;
+  private List<Integer> m_lastData;
+  private Game m_game;
+  private int m_moveNumber;
+  private boolean m_showMoveNumber;
+  private int[] m_lasts;
+  private String[] m_wimgs;
+  private String[] m_bimgs;
+  private String m_imagePrefix;
+  private String m_styleFilename;
 }
