@@ -52,7 +52,7 @@
               [#assign kind = "main" /]
             [/#if]
 
-            <a id="chesspresso_ply_link_${ply.moveNumber}" class="chesspresso_ply chesspresso_${kind}"
+            <a id="chesspresso_ply_link_${ply.moveNumber}" class="chesspresso_ply chesspresso_${kind}">
              href="javascript:chesspresso.go(${ply.moveNumber})">
               [#if ply.showMoveNumber]
                 ${ply.plyNumber / 2 + 1}.
@@ -79,7 +79,7 @@
     </tbody>
   </table>
 
-  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
   [#noescape]
   <script type="text/javascript">
@@ -144,17 +144,17 @@
       if (num<0) this.moveNumber=0;
       else if (num > this.lastMoveNumber) this.moveNumber = this.lastMoveNumber;
       else this.moveNumber = num;
-      for(i=0;i<64;i++){
+      for(var i=0;i<64;i++){
+        var offset = 0;
         if ((Math.floor(i/8)%2)==(i%2)) offset=0; else offset=13;
         $('#chesspresso_square_image_' + i).attr('src', this.imgs[this.sq[num][i]+offset]);
       }
 
       this.highlightPly(true);
-        //window.document.anchors[this.moveNumber-1].style.background="black"; window.document.anchors[this.moveNumber-1].style.color="white";}
     }
     Chesspresso.prototype.gotoStart = function() {this.go(0);}
     Chesspresso.prototype.goBackward = function() {this.go(this.last[this.moveNumber]);}
-    Chesspresso.prototype.goForward = function() {for (i=this.lastMoveNumber + 1; i>this.moveNumber; i--) if (this.last[i]==this.moveNumber) {this.go(i); break;}}
+    Chesspresso.prototype.goForward = function() {for (var i=this.lastMoveNumber + 1; i>this.moveNumber; i--) if (this.last[i]==this.moveNumber) {this.go(i); break;}}
     Chesspresso.prototype.gotoEnd = function() {this.go(this.lastMoveNumber);}
     var chesspresso = new Chesspresso();
     // ]]>

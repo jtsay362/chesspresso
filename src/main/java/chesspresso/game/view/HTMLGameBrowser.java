@@ -210,7 +210,6 @@ public class HTMLGameBrowser implements GameListener {
          "   .chesspresso_line { text-decoration:none }\n" +
          "  a.chesspresso_main { font-weight:bold; color:black; }\n" +
          "  a.chesspresso_line { color:black }\n" +
-         "  table.chesspresso_content { cell-spacing:20 }\n" +
          "  span.chesspresso_comment {font-style:italic}\n" +
          "  .chesspresso_deselected_ply_link { background: white !important; color: black !important; }\n" +
          "  .chesspresso_selected_ply_link { background: black !important; color: white !important; }\n" +
