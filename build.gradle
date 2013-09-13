@@ -1,8 +1,26 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'application'
 
 sourceCompatibility = 1.7
 version = '1.0'
+mainClassName = 'chesspresso.game.view.HTMLGameBrowser'
+
+defaultTasks 'build'
+
+def addDependencies(configurationName, depInfo) {
+  depInfo.each {
+    def group = it.key
+    def nameToInfoMap = it.value
+
+    nameToInfoMap.each {
+      def name = it.key
+      def info = it.value
+      dependencies.add(configurationName, [group: group, name: name] + info)
+    }
+  }
+}
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'Chesspresso', 'Implementation-Version': version
@@ -13,10 +31,23 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
-    testCompile group: 'junit', name: 'junit', version: '4.+'
-}
+def compileDepInfo = [
+ 'commons-codec' : [
+  'commons-codec' : [version: '1.8']
+ ],
+ 'org.freemarker' : [
+  'freemarker' : [version: '2.3.20']
+ ]
+];
+
+def testDepInfo = [
+ 'junit' : [
+    'junit' : [version: '4.+']
+  ]
+];
+
+addDependencies('compile', compileDepInfo)
+addDependencies('testCompile', testDepInfo)
 
 test {
     systemProperties 'property': 'value'
