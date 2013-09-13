@@ -30,3 +30,9 @@ uploadArchives {
     }
 }
 
+task generateWrapper(type: Wrapper) {
+  gradleVersion = '1.7'
+}
+
+
+
