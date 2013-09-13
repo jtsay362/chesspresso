@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -99,6 +101,11 @@ public class HTMLGameBrowser implements GameListener {
    * Create a new HTMLGameBrowser with default settings.
    */
   public HTMLGameBrowser() {
+    this("");
+  }
+
+
+  public HTMLGameBrowser(final String imagePrefix) {
     m_wimgs = new String[]{
      "wkw.gif", "wpw.gif", "wqw.gif", "wrw.gif", "wbw.gif", "wnw.gif", "now.gif",
      "bnw.gif", "bbw.gif", "brw.gif", "bqw.gif", "bpw.gif", "bkw.gif"
@@ -107,7 +114,7 @@ public class HTMLGameBrowser implements GameListener {
      "wkb.gif", "wpb.gif", "wqb.gif", "wrb.gif", "wbb.gif", "wnb.gif", "nob.gif",
      "bnb.gif", "bbb.gif", "brb.gif", "bqb.gif", "bpb.gif", "bkb.gif"
     };
-    m_imagePrefix = "";
+    m_imagePrefix = StringUtils.trimToEmpty(imagePrefix);
     m_styleFilename = null;
   }
 
@@ -128,15 +135,6 @@ public class HTMLGameBrowser implements GameListener {
    */
   private void setStyleFilename(String styleFilename) {
     m_styleFilename = styleFilename;
-  }
-
-  /**
-   * Set thes prefix for images. The default is empty.
-   *
-   * @param imagePrefix the prefix for images, must contain trailing slashes
-   */
-  private void setImagePrefix(String imagePrefix) {
-    m_imagePrefix = imagePrefix;
   }
 
   /**
@@ -181,7 +179,8 @@ public class HTMLGameBrowser implements GameListener {
    *                    produce your own header and footer
    */
   public synchronized void produceHTML(final OutputStream outStream,
-                                       final Game game, final boolean contentOnly, final boolean debugMode)
+                                       final Game game, final boolean contentOnly,
+                                       final boolean debugMode)
    throws Exception {
     m_plyModels = new LinkedList<>();
     m_posData = new LinkedList<>();
@@ -276,11 +275,12 @@ public class HTMLGameBrowser implements GameListener {
 
   public static void main(String[] args) {
     if (args.length < 1) {
-      //args = new String[]{ "fischer.pgn" };
+      args = new String[]{ "fischer.pgn" };
 
+      /*
       System.out.println("Usage: java " + HTMLGameBrowser.class.getName() +
        " <PGN filename>");
-      System.exit(0);
+      System.exit(0); */
     }
 
     try {
@@ -306,7 +306,7 @@ public class HTMLGameBrowser implements GameListener {
     int moveNumber = 0;
     int level = 0;
     Move move;
-    List<String> nags = new LinkedList<String>();
+    List<String> nags = new LinkedList<>();
     String comment;
 
     public boolean getLineStart() {
@@ -432,6 +432,6 @@ public class HTMLGameBrowser implements GameListener {
   private int[] m_lasts;
   private String[] m_wimgs;
   private String[] m_bimgs;
-  private String m_imagePrefix;
+  private final String m_imagePrefix;
   private String m_styleFilename;
 }
