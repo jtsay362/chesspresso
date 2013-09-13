@@ -39,6 +39,7 @@ public class HTMLGameBrowser implements GameListener
     private int m_moveNumber;
     private boolean m_showMoveNumber;
     private int[] m_lasts;
+    private PrintStream m_out;
 
     
     //======================================================================
@@ -59,7 +60,7 @@ public class HTMLGameBrowser implements GameListener
 
     private void addPosData(ImmutablePosition pos)
     {
-        m_posData.append("  sq[" + m_moveNumber + "] = new Array(");
+        m_posData.append("  this.sq[" + m_moveNumber + "] = new Array(");
         for (int row = Chess.NUM_OF_ROWS-1; row >= 0; row--) {
             for (int col = 0; col < Chess.NUM_OF_COLS; col++) {
                 int sqi = Chess.coorToSqi(col, row);
@@ -77,7 +78,7 @@ public class HTMLGameBrowser implements GameListener
         boolean isMainLine = (level == 0);
         String type = isMainLine ? "main" : "line";
         
-        m_moves.append("<a name=\"" + m_moveNumber + "\" class=\"" + type + "\" href=\"javascript:go(" + m_moveNumber + ")\">");
+        m_moves.append("<a name=\"" + m_moveNumber + "\" class=\"" + type + "\" href=\"javascript:chesspresso.go(" + m_moveNumber + ")\">");
         if (m_showMoveNumber) {
             m_moves.append((plyNumber / 2 + 1) + ".");
         }
@@ -213,7 +214,7 @@ public class HTMLGameBrowser implements GameListener
      */
     public synchronized void produceHTML(OutputStream outStream, Game game, boolean contentOnly)
     {
-        PrintStream out = new PrintStream(outStream);
+        m_out = new PrintStream(outStream);
         
         m_moves = new StringBuffer();
         m_posData = new StringBuffer();
@@ -223,13 +224,14 @@ public class HTMLGameBrowser implements GameListener
         m_showMoveNumber = true;
         m_lasts = new int[100]; m_lasts[0] = 0;
         
-        m_posData.append("  sq = new Array(" + game.getNumOfPlies() + "); ");
-        m_lastData.append("  last=new Array(0");
+        m_posData.append("  this.sq = new Array(" + game.getNumOfPlies() + "); ");
+        m_lastData.append("  this.last = new Array(0");
         
         m_game.gotoStart();
         addPosData(m_game.getPosition());
         m_moveNumber++;
         
+        // FIXME: HTML escape
         m_moves.append("<h4>" + m_game + "</h4>");
         
         game.traverse(this, true);
@@ -238,107 +240,126 @@ public class HTMLGameBrowser implements GameListener
         m_lastData.append(");");
         
         if (!contentOnly) {
-            out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-            out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"de\">");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<meta name=\"generator\" content=\"Chesspresso\" />");
-            out.println("<title>" + m_game + "</title>");
+            p("<!doctype html>");            
+            p("<html>");
+            p("<head>");
+            p("<meta name=\"generator\" content=\"Chesspresso\" />");
+            
+            // FIXME: HTML escape
+            p("<title>" + m_game + "</title>");
             if (m_styleFilename == null) {
-                out.println("<style type=\"text/css\">");
-                out.println("   .main {text-decoration:none}");
-                out.println("   .line {text-decoration:none}");
-                out.println("  a.main {font-weight:bold; color:black}");
-                out.println("  a.line {color:black}");
-                out.println("  table.content {cell-spacing:20}");
-                out.println("  span.comment {font-style:italic}");
-                out.println("</style>");
+                p("<style type=\"text/css\">");
+                p("   .main {text-decoration:none}");
+                p("   .line {text-decoration:none}");
+                p("  a.main {font-weight:bold; color:black}");
+                p("  a.line {color:black}");
+                p("  table.content {cell-spacing:20}");
+                p("  span.comment {font-style:italic}");
+                p("</style>");
             } else {
-                out.println("<link rel=\"stylesheet\" href=\"" + m_styleFilename + "\" type=\"text/css\" />");
+                p("<link rel=\"stylesheet\" href=\"" + m_styleFilename + "\" type=\"text/css\" />");
             }
         
-            out.println("<script language=\"JavaScript\">");
-            out.println("  moveNumber = 0;");
-            out.print("  imgs = new Array(");
+            p("<script>");
+            p("var Chesspresso = function() {");
+            p("  this.moveNumber = 0;");
+            pnl("  this.imgs = new Array(");
+            
             for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
-                out.print("'" + getImageForStone(stone, true) + "',");
+                pnl("'" + getImageForStone(stone, true) + "',");
             }
+            
             for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
-                out.print("'" + getImageForStone(stone, false) + "'");
-                if (stone < Chess.MAX_STONE) out.print(",");
+                pnl("'" + getImageForStone(stone, false) + "'");
+                if (stone < Chess.MAX_STONE) pnl(",");
             }
-            out.println(");");
+            
+            p(");");            
+            p(m_posData.toString());                                            
+            p(m_lastData.toString());            
+            p("};");
         
-//        out.println("function go(num) {window.document.anchors[moveNumber-1].style.background=\"white\"; if (num<0) moveNumber=0; else if (num>" + (m_moveNumber - 1) + ") moveNumber=" + (m_moveNumber - 1) + "; else moveNumber=num; for(i=0;i<64;i++){if ((Math.floor(i/8)%2)==(i%2)) window.document.images[i].src=wimgs[sq[num][i]]; else window.document.images[i].src=bimgs[sq[num][i]];}; window.document.anchors[moveNumber-1].style.background=\"black\";}");
-            out.println("  function go(num) {");
+//        p("function go(num) {window.document.anchors[moveNumber-1].style.background=\"white\"; if (num<0) moveNumber=0; else if (num>" + (m_moveNumber - 1) + ") moveNumber=" + (m_moveNumber - 1) + "; else moveNumber=num; for(i=0;i<64;i++){if ((Math.floor(i/8)%2)==(i%2)) window.document.images[i].src=wimgs[sq[num][i]]; else window.document.images[i].src=bimgs[sq[num][i]];}; window.document.anchors[moveNumber-1].style.background=\"black\";}");
+            p("  Chesspresso.prototype.go = function (num) {");
             // TODO style for selected move
-            out.println("    if (moveNumber>0) {window.document.anchors[moveNumber-1].style.background=\"white\"; window.document.anchors[moveNumber-1].style.color=\"black\";}");
-            out.println("    if (num<0) moveNumber=0;");
-            out.println("    else if (num>" + (m_moveNumber - 1) + ") moveNumber=" + (m_moveNumber - 1) + ";");
-            out.println("    else moveNumber=num;");
-            out.println("    for(i=0;i<64;i++){");
-            out.println("      if ((Math.floor(i/8)%2)==(i%2)) offset=0; else offset=13;");
-            out.println("      window.document.images[i].src=imgs[sq[num][i]+offset];");
-            out.println("    }");
-            out.println("    if (moveNumber>0) {window.document.anchors[moveNumber-1].style.background=\"black\"; window.document.anchors[moveNumber-1].style.color=\"white\";}");
-            out.println("  }");
-            out.println("  function gotoStart() {go(0);}");
-            out.println("  function goBackward() {go(last[moveNumber]);}");
-            out.println("  function goForward() {for (i=" + m_moveNumber + "; i>moveNumber; i--) if (last[i]==moveNumber) {go(i); break;}}");
-            out.println("  function gotoEnd() {go(" + (m_moveNumber - 1) + ");}");
-            out.println(m_posData.toString());
-            out.println(m_lastData.toString());
-            out.println("</script>");
-            out.println();
+            p("    if (this.moveNumber>0) {window.document.anchors[this.moveNumber-1].style.background=\"white\"; window.document.anchors[this.moveNumber-1].style.color=\"black\";}");
+            p("    if (num<0) this.moveNumber=0;");
+            p("    else if (num>" + (m_moveNumber - 1) + ") this.moveNumber=" + (m_moveNumber - 1) + ";");
+            p("    else this.moveNumber=num;");
+            p("    for(i=0;i<64;i++){");
+            p("      if ((Math.floor(i/8)%2)==(i%2)) offset=0; else offset=13;");
+            p("      window.document.images[i].src=this.imgs[this.sq[num][i]+offset];");
+            p("    }");
+            p("    if (this.moveNumber>0) {window.document.anchors[this.moveNumber-1].style.background=\"black\"; window.document.anchors[this.moveNumber-1].style.color=\"white\";}");
+            p("  }");
+            p("  Chesspresso.prototype.gotoStart = function() {this.go(0);}");
+            p("  Chesspresso.prototype.goBackward = function() {this.go(this.last[this.moveNumber]);}");
+            p("  Chesspresso.prototype.goForward = function() {for (i=" + m_moveNumber + "; i>this.moveNumber; i--) if (this.last[i]==this.moveNumber) {this.go(i); break;}}");
+            p("  Chesspresso.prototype.gotoEnd = function() {this.go(" + (m_moveNumber - 1) + ");}");            
+            
+            p("var chesspresso = new Chesspresso();");
+            
+            p("</script>");
+            p("");
 
-            out.println("</head>");
-            out.println();
+            p("</head>");
+            p("");
 
-            out.println("<body>");
+            p("<body>");
         }
         
-        out.println("<table class=\"content\"><tr><td valign=\"top\">");
+        p("<table class=\"content\"><thead></thead><tbody><tr><td valign=\"top\">");
         
-        out.println("<table cellspacing=\"0\" cellpadding=\"0\">");
+        p("<table cellspacing=\"0\" cellpadding=\"0\"><thead></thead><tbody>");
         Position startPos = Position.createInitialPosition();
         for (int row = Chess.NUM_OF_ROWS-1; row >= 0; row--) {
-            out.print("  <tr>");
+            pnl("  <tr>");
             for (int col = 0; col < Chess.NUM_OF_COLS; col++) {
                 int sqi = Chess.coorToSqi(col, row);           
-                out.print("<td><img src=\"" + getImageForStone(startPos.getStone(sqi), Chess.isWhiteSquare(sqi)) + "\"></td>");
+                pnl("<td><img src=\"" + getImageForStone(startPos.getStone(sqi), Chess.isWhiteSquare(sqi)) + "\"></td>");
             }
-            out.println("</tr>");
+            p("</tr>");
         }
-        out.println("</table>");
-        out.println("<center><form name=\"tapecontrol\">");
-        out.println("<input type=button value=\" Start \" onClick=\"gotoStart();\" onDblClick=\"gotoStart();\">");
-        out.println("<input type=button value=\" &lt; \" onClick=\"goBackward();\" onDblClick=\"goBackward();\">");
-        out.println("<input type=button value=\" &gt; \" onClick=\"goForward();\" onDblClick=\"goForward();\">");
-        out.println("<input type=button value=\" End \" onClick=\"gotoEnd();\" onDblClick=\"gotoEnd();\">");
-        out.println("</form></center>");
-        out.println();
+        p("</tbody>");
+        p("</table>");
+        p("<center><form name=\"tapecontrol\">");
+        p("<input type=button value=\" Start \" onClick=\"chesspresso.gotoStart();\" onDblClick=\"chesspresso.gotoStart();\">");
+        p("<input type=button value=\" &lt; \" onClick=\"chesspresso.goBackward();\" onDblClick=\"chesspresso.goBackward();\">");
+        p("<input type=button value=\" &gt; \" onClick=\"chesspresso.goForward();\" onDblClick=\"chesspresso.goForward();\">");
+        p("<input type=button value=\" End \" onClick=\"chesspresso.gotoEnd();\" onDblClick=\"chesspresso.gotoEnd();\">");
+        p("</form></center>");
+        p("");
         
-        out.println("</td><td valign=\"top\">");
-        out.println(m_moves.toString());
-        out.println("</td</tr></table>");
+        p("</td><td valign=\"top\">");
+        // FIXME: HTML Escape
+        p(m_moves.toString());
+        p("</td></tr></tbody></table>");
         
         if (!contentOnly) {
-            out.println("</body></html>");
+            p("</body></html>");
         }
     }
     
-//    public static void main(String[] args)
-//    {
-//        try {
-//            chesspresso.pgn.PGNReader pgn = new chesspresso.pgn.PGNReader(args[0]);
-//            Game game = pgn.parseGame();
-//            System.out.println(game);
-//
-//            HTMLGameBrowser html = new HTMLGameBrowser();
-//            html.produceHTML(System.out, game);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-//
+    public void pnl(String s) {
+      m_out.print(s);
+    }
+    
+    public void p(String s) {
+      m_out.println(s);
+    }
+    
+    public static void main(String[] args)
+    {
+        try {
+            chesspresso.pgn.PGNReader pgn = new chesspresso.pgn.PGNReader(
+                new FileReader(args[0]), "game");
+            Game game = pgn.parseGame();
+
+            HTMLGameBrowser html = new HTMLGameBrowser();
+            html.produceHTML(System.out, game);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 }
