@@ -1,8 +1,12 @@
 target/
 classes/
 build/
+out/
 .gradle/
 .classpath
 .project
 .settings/
 gradle/
+.idea/
+*.iml
+
