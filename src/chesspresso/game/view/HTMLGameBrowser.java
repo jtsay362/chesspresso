@@ -240,111 +240,111 @@ public class HTMLGameBrowser implements GameListener
         m_lastData.append(");");
         
         if (!contentOnly) {
-            p("<!doctype html>");            
-            p("<html>");
-            p("<head>");
-            p("<meta name=\"generator\" content=\"Chesspresso\" />");
+            pln("<!doctype html>");            
+            pln("<html>");
+            pln("<head>");
+            pln("<meta name=\"generator\" content=\"Chesspresso\" />");
             
             // FIXME: HTML escape
-            p("<title>" + m_game + "</title>");
+            pln("<title>" + m_game + "</title>");
             if (m_styleFilename == null) {
-                p("<style type=\"text/css\">");
-                p("   .main {text-decoration:none}");
-                p("   .line {text-decoration:none}");
-                p("  a.main {font-weight:bold; color:black}");
-                p("  a.line {color:black}");
-                p("  table.content {cell-spacing:20}");
-                p("  span.comment {font-style:italic}");
-                p("</style>");
+                pln("<style type=\"text/css\">");
+                pln("   .main {text-decoration:none}");
+                pln("   .line {text-decoration:none}");
+                pln("  a.main {font-weight:bold; color:black}");
+                pln("  a.line {color:black}");
+                pln("  table.content {cell-spacing:20}");
+                pln("  span.comment {font-style:italic}");
+                pln("</style>");
             } else {
-                p("<link rel=\"stylesheet\" href=\"" + m_styleFilename + "\" type=\"text/css\" />");
+                pln("<link rel=\"stylesheet\" href=\"" + m_styleFilename + "\" type=\"text/css\" />");
             }
         
-            p("<script>");
-            p("var Chesspresso = function() {");
-            p("  this.moveNumber = 0;");
-            pnl("  this.imgs = new Array(");
+            pln("<script>");
+            pln("var Chesspresso = function() {");
+            pln("  this.moveNumber = 0;");
+            p("  this.imgs = new Array(");
             
             for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
-                pnl("'" + getImageForStone(stone, true) + "',");
+                p("'" + getImageForStone(stone, true) + "',");
             }
             
             for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
-                pnl("'" + getImageForStone(stone, false) + "'");
-                if (stone < Chess.MAX_STONE) pnl(",");
+                p("'" + getImageForStone(stone, false) + "'");
+                if (stone < Chess.MAX_STONE) p(",");
             }
             
-            p(");");            
-            p(m_posData.toString());                                            
-            p(m_lastData.toString());            
-            p("};");
+            pln(");");            
+            pln(m_posData.toString());                                            
+            pln(m_lastData.toString());            
+            pln("};");
         
 //        p("function go(num) {window.document.anchors[moveNumber-1].style.background=\"white\"; if (num<0) moveNumber=0; else if (num>" + (m_moveNumber - 1) + ") moveNumber=" + (m_moveNumber - 1) + "; else moveNumber=num; for(i=0;i<64;i++){if ((Math.floor(i/8)%2)==(i%2)) window.document.images[i].src=wimgs[sq[num][i]]; else window.document.images[i].src=bimgs[sq[num][i]];}; window.document.anchors[moveNumber-1].style.background=\"black\";}");
-            p("  Chesspresso.prototype.go = function (num) {");
+            pln("  Chesspresso.prototype.go = function (num) {");
             // TODO style for selected move
-            p("    if (this.moveNumber>0) {window.document.anchors[this.moveNumber-1].style.background=\"white\"; window.document.anchors[this.moveNumber-1].style.color=\"black\";}");
-            p("    if (num<0) this.moveNumber=0;");
-            p("    else if (num>" + (m_moveNumber - 1) + ") this.moveNumber=" + (m_moveNumber - 1) + ";");
-            p("    else this.moveNumber=num;");
-            p("    for(i=0;i<64;i++){");
-            p("      if ((Math.floor(i/8)%2)==(i%2)) offset=0; else offset=13;");
-            p("      window.document.images[i].src=this.imgs[this.sq[num][i]+offset];");
-            p("    }");
-            p("    if (this.moveNumber>0) {window.document.anchors[this.moveNumber-1].style.background=\"black\"; window.document.anchors[this.moveNumber-1].style.color=\"white\";}");
-            p("  }");
-            p("  Chesspresso.prototype.gotoStart = function() {this.go(0);}");
-            p("  Chesspresso.prototype.goBackward = function() {this.go(this.last[this.moveNumber]);}");
-            p("  Chesspresso.prototype.goForward = function() {for (i=" + m_moveNumber + "; i>this.moveNumber; i--) if (this.last[i]==this.moveNumber) {this.go(i); break;}}");
-            p("  Chesspresso.prototype.gotoEnd = function() {this.go(" + (m_moveNumber - 1) + ");}");            
+            pln("    if (this.moveNumber>0) {window.document.anchors[this.moveNumber-1].style.background=\"white\"; window.document.anchors[this.moveNumber-1].style.color=\"black\";}");
+            pln("    if (num<0) this.moveNumber=0;");
+            pln("    else if (num>" + (m_moveNumber - 1) + ") this.moveNumber=" + (m_moveNumber - 1) + ";");
+            pln("    else this.moveNumber=num;");
+            pln("    for(i=0;i<64;i++){");
+            pln("      if ((Math.floor(i/8)%2)==(i%2)) offset=0; else offset=13;");
+            pln("      window.document.images[i].src=this.imgs[this.sq[num][i]+offset];");
+            pln("    }");
+            pln("    if (this.moveNumber>0) {window.document.anchors[this.moveNumber-1].style.background=\"black\"; window.document.anchors[this.moveNumber-1].style.color=\"white\";}");
+            pln("  }");
+            pln("  Chesspresso.prototype.gotoStart = function() {this.go(0);}");
+            pln("  Chesspresso.prototype.goBackward = function() {this.go(this.last[this.moveNumber]);}");
+            pln("  Chesspresso.prototype.goForward = function() {for (i=" + m_moveNumber + "; i>this.moveNumber; i--) if (this.last[i]==this.moveNumber) {this.go(i); break;}}");
+            pln("  Chesspresso.prototype.gotoEnd = function() {this.go(" + (m_moveNumber - 1) + ");}");            
             
-            p("var chesspresso = new Chesspresso();");
+            pln("var chesspresso = new Chesspresso();");
             
-            p("</script>");
-            p("");
+            pln("</script>");
+            pln("");
 
-            p("</head>");
-            p("");
+            pln("</head>");
+            pln("");
 
-            p("<body>");
+            pln("<body>");
         }
         
-        p("<table class=\"content\"><thead></thead><tbody><tr><td valign=\"top\">");
+        pln("<table class=\"content\"><thead></thead><tbody><tr><td valign=\"top\">");
         
-        p("<table cellspacing=\"0\" cellpadding=\"0\"><thead></thead><tbody>");
+        pln("<table cellspacing=\"0\" cellpadding=\"0\"><thead></thead><tbody>");
         Position startPos = Position.createInitialPosition();
         for (int row = Chess.NUM_OF_ROWS-1; row >= 0; row--) {
-            pnl("  <tr>");
+            p("  <tr>");
             for (int col = 0; col < Chess.NUM_OF_COLS; col++) {
                 int sqi = Chess.coorToSqi(col, row);           
-                pnl("<td><img src=\"" + getImageForStone(startPos.getStone(sqi), Chess.isWhiteSquare(sqi)) + "\"></td>");
+                p("<td><img src=\"" + getImageForStone(startPos.getStone(sqi), Chess.isWhiteSquare(sqi)) + "\"></td>");
             }
-            p("</tr>");
+            pln("</tr>");
         }
-        p("</tbody>");
-        p("</table>");
-        p("<center><form name=\"tapecontrol\">");
-        p("<input type=button value=\" Start \" onClick=\"chesspresso.gotoStart();\" onDblClick=\"chesspresso.gotoStart();\">");
-        p("<input type=button value=\" &lt; \" onClick=\"chesspresso.goBackward();\" onDblClick=\"chesspresso.goBackward();\">");
-        p("<input type=button value=\" &gt; \" onClick=\"chesspresso.goForward();\" onDblClick=\"chesspresso.goForward();\">");
-        p("<input type=button value=\" End \" onClick=\"chesspresso.gotoEnd();\" onDblClick=\"chesspresso.gotoEnd();\">");
-        p("</form></center>");
-        p("");
+        pln("</tbody>");
+        pln("</table>");
+        pln("<center><form name=\"tapecontrol\">");
+        pln("<input type=button value=\" Start \" onClick=\"chesspresso.gotoStart();\" onDblClick=\"chesspresso.gotoStart();\">");
+        pln("<input type=button value=\" &lt; \" onClick=\"chesspresso.goBackward();\" onDblClick=\"chesspresso.goBackward();\">");
+        pln("<input type=button value=\" &gt; \" onClick=\"chesspresso.goForward();\" onDblClick=\"chesspresso.goForward();\">");
+        pln("<input type=button value=\" End \" onClick=\"chesspresso.gotoEnd();\" onDblClick=\"chesspresso.gotoEnd();\">");
+        pln("</form></center>");
+        pln("");
         
-        p("</td><td valign=\"top\">");
+        pln("</td><td valign=\"top\">");
         // FIXME: HTML Escape
-        p(m_moves.toString());
-        p("</td></tr></tbody></table>");
+        pln(m_moves.toString());
+        pln("</td></tr></tbody></table>");
         
         if (!contentOnly) {
-            p("</body></html>");
+            pln("</body></html>");
         }
-    }
-    
-    public void pnl(String s) {
-      m_out.print(s);
     }
     
     public void p(String s) {
+      m_out.print(s);
+    }
+    
+    public void pln(String s) {
       m_out.println(s);
     }
     
