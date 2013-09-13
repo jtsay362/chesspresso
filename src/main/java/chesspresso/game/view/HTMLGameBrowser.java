@@ -32,9 +32,9 @@ import java.util.Stack;
 public class HTMLGameBrowser implements GameListener
 {
     
-    private StringBuffer m_moves;
-    private StringBuffer m_posData;
-    private StringBuffer m_lastData;
+    private StringBuilder m_moves;
+    private StringBuilder m_posData;
+    private StringBuilder m_lastData;
     private Game m_game;
     private int m_moveNumber;
     private boolean m_showMoveNumber;
@@ -216,9 +216,9 @@ public class HTMLGameBrowser implements GameListener
     {
         m_out = new PrintStream(outStream);
         
-        m_moves = new StringBuffer();
-        m_posData = new StringBuffer();
-        m_lastData = new StringBuffer();
+        m_moves = new StringBuilder();
+        m_posData = new StringBuilder();
+        m_lastData = new StringBuilder();
         m_game = game;
         m_moveNumber = 0;
         m_showMoveNumber = true;
