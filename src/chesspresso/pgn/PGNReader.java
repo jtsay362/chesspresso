@@ -117,34 +117,6 @@ public final class PGNReader extends PGN
         setInput(new InputStreamReader(in), name);
     }
 
-    /**
-     *@deprecated
-     */
-    public PGNReader(String filename) throws IOException
-    {
-        init();
-        if(filename.toLowerCase().endsWith(".gz")) {
-            setInput(new InputStreamReader(new GZIPInputStream(new FileInputStream(filename))), filename);
-        } else {
-            setInput(new FileReader(filename), filename);
-        }
-    }
-
-    /**
-     *@deprecated
-     */
-    public PGNReader(URL url) throws MalformedURLException, IOException
-    {
-        init();
-        if(url.getFile().toLowerCase().endsWith(".gz"))
-            setInput(new InputStreamReader(new GZIPInputStream(url.openStream())), url.getFile());
-        else
-            setInput(new InputStreamReader(url.openStream()), url.getFile());
-    }
-
-    /**
-     *@deprecated
-     */
     public PGNReader(Reader reader, String name)
     {
         init();
@@ -740,7 +712,7 @@ public final class PGNReader extends PGN
             for(; index < args.length; index++) {
                 int numOfGames = 0;
                 int numOfGamesWithResult = 0;
-                PGNReader reader = new PGNReader(args[index]);
+                PGNReader reader = new PGNReader(new StringReader(args[index]), "game");
                 reader.setErrorHandler(new PGNSimpleErrorHandler(System.out));
                 if (mode == SHOW_CHARS) {
                     do {
