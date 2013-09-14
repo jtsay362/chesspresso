@@ -137,7 +137,7 @@
 
     Chesspresso.prototype.highlightPly = function (selected) {
       if (this.moveNumber > 0) {
-        var element = $('#chesspresso_ply_link_' + (this.moveNumber - 1));
+        var element = $('#chesspresso_ply_link_' + this.moveNumber);
 
         if (selected) {
           element.removeClass('chesspresso_deselected_ply_link');
