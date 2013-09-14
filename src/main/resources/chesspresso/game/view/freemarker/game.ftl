@@ -1,7 +1,7 @@
 [#ftl]
 [#escape contents as contents?html]
 [#if !contentOnly]
-  <!doctype html>
+  <!DOCTYPE html>
   <html>
   <head>
     <meta name="generator" content="Chesspresso" />
