@@ -52,7 +52,7 @@
               [#assign kind = "main" /]
             [/#if]
 
-            <a id="chesspresso_ply_link_${ply.moveNumber}" class="chesspresso_ply chesspresso_${kind}">
+            <a id="chesspresso_ply_link_${ply.moveNumber}" class="chesspresso_ply chesspresso_${kind}"
              href="javascript:chesspresso.go(${ply.moveNumber})">
               [#if ply.showMoveNumber]
                 ${ply.plyNumber / 2 + 1}.
