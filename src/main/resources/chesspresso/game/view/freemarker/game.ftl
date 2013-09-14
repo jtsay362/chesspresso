@@ -1,5 +1,6 @@
 [#ftl]
 [#escape contents as contents?html]
+
 [#if !contentOnly]
   <!DOCTYPE html>
   <html>
@@ -38,10 +39,10 @@
         </table>
 
         <div id="chesspresso_tape_control" class="chesspresso_centered" >
-          <button type="button" class="btn btn-sm" onClick="chesspresso.gotoStart();" onDblClick="chesspresso.gotoStart();"><span class="glyphicon glyphicon-fast-backward" /></button>
-          <button type="button" class="btn btn-sm" onClick="chesspresso.goBackward();" onDblClick="chesspresso.goBackward();"><span class="glyphicon glyphicon-backward" /></button>
-          <button type="button" class="btn btn-sm" onClick="chesspresso.goForward();" onDblClick="chesspresso.goForward();"><span class="glyphicon glyphicon-forward" /></button>
-          <button type="button" class="btn btn-sm" onClick="chesspresso.gotoEnd();" onDblClick="chesspresso.gotoEnd();"><span class="glyphicon glyphicon-fast-forward" /></button>
+          <button id="chesspresso_start_button" type="button" class="btn btn-sm" ><span class="glyphicon glyphicon-fast-backward" /></button>
+          <button id="chesspresso_back_button" type="button" class="btn btn-sm" ><span class="glyphicon glyphicon-backward" /></button>
+          <button id="chesspresso_forward_button" type="button" class="btn btn-sm" ><span class="glyphicon glyphicon-forward" /></button>
+          <button id="chesspresso_end_button" type="button" class="btn btn-sm" ><span class="glyphicon glyphicon-fast-forward" /></button>
         </div>
       </div>
     </div>
@@ -59,8 +60,8 @@
           [#assign kind = "main" /]
         [/#if]
 
-        <a id="chesspresso_ply_link_${ply.moveNumber}" class="chesspresso_ply chesspresso_${kind}"
-         href="javascript:chesspresso.go(${ply.moveNumber})">
+        <a data-move-number="${ply.moveNumber}"
+         class="chesspresso_ply chesspresso_${kind}" href="#">
           [#if ply.showMoveNumber]
             ${ply.plyNumber / 2 + 1}.
           [/#if]
@@ -164,6 +165,29 @@
     Chesspresso.prototype.goBackward = function() {this.go(this.last[this.moveNumber]);}
     Chesspresso.prototype.goForward = function() {for (var i=this.lastMoveNumber + 1; i>this.moveNumber; i--) if (this.last[i]==this.moveNumber) {this.go(i); break;}}
     Chesspresso.prototype.gotoEnd = function() {this.go(this.lastMoveNumber);}
+
+    $('#chesspresso_start_button').click(function() {
+      chesspresso.gotoStart();
+    });
+
+    $('#chesspresso_back_button').click(function() {
+      chesspresso.goBackward();
+    });
+
+    $('#chesspresso_forward_button').click(function() {
+      chesspresso.goForward();
+    });
+
+    $('#chesspresso_end_button').click(function() {
+      chesspresso.gotoEnd();
+    });
+
+    $('.chesspresso_ply').click(function(e) {
+      var moveNumber = $(this).attr('data-move-number');
+      chesspresso.go(parseInt(moveNumber));
+      e.preventDefault();
+    });
+
     var chesspresso = new Chesspresso();
     // ]]>
   </script>
