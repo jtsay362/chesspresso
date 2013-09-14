@@ -5,7 +5,13 @@
   <html>
   <head>
     <meta name="generator" content="Chesspresso" />
-    <title>${game.toString()}</title>
+
+    <title>
+    [#if game.white??]
+      ${game.toString()}
+    [/#if]
+    </title>
+
     [#noescape]
     ${styleHtml}
     [/#noescape]
@@ -41,8 +47,10 @@
           </center>
         </td>
         <td valign="top">
-          <h4>${game.toString()}</h4>
 
+          [#if game.white??]
+            <h4>${game.toString()}</h4>
+          [/#if]
 
           [#list plys as ply]
             [#if ply.lineStart]&nbsp;([/#if]
@@ -73,7 +81,9 @@
 
           [/#list]
 
-          ${game.resultStr}
+          [#if game.resultStr??]
+            ${game.resultStr}
+          [/#if]
         </td>
       </tr>
     </tbody>
