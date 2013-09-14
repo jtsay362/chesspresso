@@ -25,7 +25,7 @@
     <tbody>
       <tr>
         <td valign="top">
-          <table cellspacing="0" cellpadding="0"><thead></thead>
+          <table class="chesspresso_board"><thead></thead>
             <tbody>
               [#assign imageCount = 0 /]
               [#list imagePathsPerRow as imagePathsForRow]
@@ -39,10 +39,10 @@
             </tbody>
           </table>
           <center><form name="chesspresso_tapecontrol">
-            <input type=button value=" Start " onClick="chesspresso.gotoStart();" onDblClick="chesspresso.gotoStart();">
-            <input type=button value=" &lt; " onClick="chesspresso.goBackward();" onDblClick="chesspresso.goBackward();">
-            <input type=button value=" &gt; " onClick="chesspresso.goForward();" onDblClick="chesspresso.goForward();">
-            <input type=button value=" End " onClick="chesspresso.gotoEnd();" onDblClick="chesspresso.gotoEnd();">
+            <button type="button" class="btn btn-sm" onClick="chesspresso.gotoStart();" onDblClick="chesspresso.gotoStart();"><span class="glyphicon glyphicon-fast-backward" /></button>
+            <button type="button" class="btn btn-sm" onClick="chesspresso.goBackward();" onDblClick="chesspresso.goBackward();"><span class="glyphicon glyphicon-backward" /></button>
+            <button type="button" class="btn btn-sm" value=" &gt; " onClick="chesspresso.goForward();" onDblClick="chesspresso.goForward();"><span class="glyphicon glyphicon-forward" /></button>
+            <button type="button" class="btn btn-sm" onClick="chesspresso.gotoEnd();" onDblClick="chesspresso.gotoEnd();"><span class="glyphicon glyphicon-fast-forward" /></button>
             </form>
           </center>
         </td>
@@ -90,6 +90,7 @@
   </table>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
   [#noescape]
   <script type="text/javascript">
