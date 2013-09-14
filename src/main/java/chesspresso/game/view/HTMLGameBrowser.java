@@ -407,11 +407,13 @@ public class HTMLGameBrowser implements GameListener {
   private final String m_imagePrefix;
   private String m_styleFilename;
 
-  private static final String _DEFAULT_STYLE_HTML =
-   "<link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\" rel=\"stylesheet\" />\n" +
-    "<style type=\"text/css\">\n" +
+  public static final String CHESSPRESSO_STYLE_HTML =
+   "<style type=\"text/css\">\n" +
+    "  .chesspresso_centered { margin: 0 auto; }\n" +
+    "  #chesspresso_container { width: 246px; }\n" +
     "  table.chesspresso_board { border-collapse: collapse; }\n" +
     "  table.chesspresso_board td, { padding : 0; }\n" +
+    "  #chesspresso_tape_control { width: 200px; margin-top: 6px; margin-left: 62px; }\n" +
     "   .chesspresso_main { text-decoration:none }\n" +
     "   .chesspresso_line { text-decoration:none }\n" +
     "  a.chesspresso_main { font-weight:bold; color:black; }\n" +
@@ -420,4 +422,11 @@ public class HTMLGameBrowser implements GameListener {
     "  .chesspresso_deselected_ply_link { background: white !important; color: black !important; }\n" +
     "  .chesspresso_selected_ply_link { background: black !important; color: white !important; }\n" +
     "</style>";
+
+  public static final String _DEFAULT_STYLE_HTML =
+   "<link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\" rel=\"stylesheet\" />\n" +
+   CHESSPRESSO_STYLE_HTML;
+
+
+
 }

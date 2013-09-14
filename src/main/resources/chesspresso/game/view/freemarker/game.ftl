@@ -20,74 +20,71 @@
 [/#if]
 
 <div class="chesspresso_content">
-  <table class="content">
-    <thead></thead>
-    <tbody>
-      <tr>
-        <td valign="top">
-          <table class="chesspresso_board"><thead></thead>
-            <tbody>
-              [#assign imageCount = 0 /]
-              [#list imagePathsPerRow as imagePathsForRow]
-              <tr>
-                [#list imagePathsForRow as imagePath]
-                  <td><img id="chesspresso_square_image_${imageCount}" src="${imagePath}" /></td>
-                  [#assign imageCount = imageCount + 1 /]
-                [/#list]
-              </tr>
+  <div class="row">
+    <div class="col-md-3">
+      <div id="chesspresso_container" class="chesspresso_centered">
+        <table class="chesspresso_board"><thead></thead>
+          <tbody>
+            [#assign imageCount = 0 /]
+            [#list imagePathsPerRow as imagePathsForRow]
+            <tr>
+              [#list imagePathsForRow as imagePath]
+                <td><img id="chesspresso_square_image_${imageCount}" src="${imagePath}" /></td>
+                [#assign imageCount = imageCount + 1 /]
               [/#list]
-            </tbody>
-          </table>
-          <center><form name="chesspresso_tapecontrol">
-            <button type="button" class="btn btn-sm" onClick="chesspresso.gotoStart();" onDblClick="chesspresso.gotoStart();"><span class="glyphicon glyphicon-fast-backward" /></button>
-            <button type="button" class="btn btn-sm" onClick="chesspresso.goBackward();" onDblClick="chesspresso.goBackward();"><span class="glyphicon glyphicon-backward" /></button>
-            <button type="button" class="btn btn-sm" value=" &gt; " onClick="chesspresso.goForward();" onDblClick="chesspresso.goForward();"><span class="glyphicon glyphicon-forward" /></button>
-            <button type="button" class="btn btn-sm" onClick="chesspresso.gotoEnd();" onDblClick="chesspresso.gotoEnd();"><span class="glyphicon glyphicon-fast-forward" /></button>
-            </form>
-          </center>
-        </td>
-        <td valign="top">
+            </tr>
+            [/#list]
+          </tbody>
+        </table>
 
-          [#if game.white??]
-            <h4>${game.toString()}</h4>
+        <div id="chesspresso_tape_control" class="chesspresso_centered" >
+          <button type="button" class="btn btn-sm" onClick="chesspresso.gotoStart();" onDblClick="chesspresso.gotoStart();"><span class="glyphicon glyphicon-fast-backward" /></button>
+          <button type="button" class="btn btn-sm" onClick="chesspresso.goBackward();" onDblClick="chesspresso.goBackward();"><span class="glyphicon glyphicon-backward" /></button>
+          <button type="button" class="btn btn-sm" onClick="chesspresso.goForward();" onDblClick="chesspresso.goForward();"><span class="glyphicon glyphicon-forward" /></button>
+          <button type="button" class="btn btn-sm" onClick="chesspresso.gotoEnd();" onDblClick="chesspresso.gotoEnd();"><span class="glyphicon glyphicon-fast-forward" /></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      [#if game.white??]
+        <h4>${game.toString()}</h4>
+      [/#if]
+
+      [#list plys as ply]
+        [#if ply.lineStart]&nbsp;([/#if]
+
+        [#assign kind = "line" /]
+        [#if ply.level = 0]
+          [#assign kind = "main" /]
+        [/#if]
+
+        <a id="chesspresso_ply_link_${ply.moveNumber}" class="chesspresso_ply chesspresso_${kind}"
+         href="javascript:chesspresso.go(${ply.moveNumber})">
+          [#if ply.showMoveNumber]
+            ${ply.plyNumber / 2 + 1}.
           [/#if]
 
-          [#list plys as ply]
-            [#if ply.lineStart]&nbsp;([/#if]
+          ${ply.move.toString()}
 
-            [#assign kind = "line" /]
-            [#if ply.level = 0]
-              [#assign kind = "main" /]
-            [/#if]
-
-            <a id="chesspresso_ply_link_${ply.moveNumber}" class="chesspresso_ply chesspresso_${kind}"
-             href="javascript:chesspresso.go(${ply.moveNumber})">
-              [#if ply.showMoveNumber]
-                ${ply.plyNumber / 2 + 1}.
-              [/#if]
-
-              ${ply.move.toString()}
-
-              [#list ply.nags as nag]
-                ${nag}
-              [/#list]
-            </a>
-
-            [#if ply.comment??]
-              <span class="chesspresso_comment">${ply.comment}</span>
-            [/#if]
-
-            [#if ply.lineEnd]&nbsp;[/#if]
-
+          [#list ply.nags as nag]
+            ${nag}
           [/#list]
+        </a>
 
-          [#if game.resultStr??]
-            ${game.resultStr}
-          [/#if]
-        </td>
-      </tr>
-    </tbody>
-  </table>
+        [#if ply.comment??]
+          <span class="chesspresso_comment">${ply.comment}</span>
+        [/#if]
+
+        [#if ply.lineEnd]&nbsp;[/#if]
+
+      [/#list]
+
+      [#if game.resultStr??]
+        ${game.resultStr}
+      [/#if]
+    </div>
+  </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
