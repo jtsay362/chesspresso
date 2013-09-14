@@ -148,9 +148,49 @@ public class HTMLGameBrowser implements GameListener {
    * @param outStream where the HTML will be sent to
    * @param game      the game to display.
    */
-  public void produceHTML(OutputStream outStream, Game game)
+  public void produceHtml(OutputStream outStream, Game game)
    throws Exception {
-    produceHTML(outStream, game, false, null, false);
+    produceHtml(outStream, game, new HtmlGenerationOptions(), false);
+  }
+
+
+  public static class HtmlGenerationOptions {
+    boolean contentOnly = false;
+    String styleHtml = DEFAULT_STYLE_HTML;
+    String scriptHtml = DEFAULT_SCRIPT_HTML;
+    int bootstrapMajorVersion = 3;
+
+    public boolean isContentOnly() {
+      return contentOnly;
+    }
+
+    public void setContentOnly(boolean contentOnly) {
+      this.contentOnly = contentOnly;
+    }
+
+    public String getStyleHtml() {
+      return styleHtml;
+    }
+
+    public void setStyleHtml(String styleHtml) {
+      this.styleHtml = styleHtml;
+    }
+
+    public String getScriptHtml() {
+      return scriptHtml;
+    }
+
+    public void setScriptHtml(String scriptHtml) {
+      this.scriptHtml = scriptHtml;
+    }
+
+    public int getBootstrapMajorVersion() {
+      return bootstrapMajorVersion;
+    }
+
+    public void setBootstrapMajorVersion(int bootstrapMajorVersion) {
+      this.bootstrapMajorVersion = bootstrapMajorVersion;
+    }
   }
 
   /**
@@ -161,9 +201,8 @@ public class HTMLGameBrowser implements GameListener {
    * @param contentOnly if true skip header and footer information, use this if you want to
    *                    produce your own header and footer
    */
-  public synchronized void produceHTML(final OutputStream outStream,
-                                       final Game game, final boolean contentOnly,
-                                       String styleHtml,
+  public synchronized void produceHtml(final OutputStream outStream,
+                                       final Game game, final HtmlGenerationOptions options,
                                        final boolean debugMode)
    throws Exception {
     m_plyModels = new LinkedList<>();
@@ -186,11 +225,7 @@ public class HTMLGameBrowser implements GameListener {
 
     List<String> imagePaths = null;
 
-    if (styleHtml == null) {
-      styleHtml = _DEFAULT_STYLE_HTML;
-    }
-
-    if (!contentOnly) {
+    if (!options.contentOnly) {
       imagePaths = new LinkedList<String>();
       for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
         imagePaths.add(getImageForStone(stone, true));
@@ -219,8 +254,7 @@ public class HTMLGameBrowser implements GameListener {
     root.put("lastMoveNumber", m_moveNumber - 1);
     root.put("posData", m_posData);
     root.put("lastData", m_lastData);
-    root.put("contentOnly", contentOnly);
-    root.put("styleHtml", styleHtml);
+    root.put("options", options);
     root.put("imagePaths", imagePaths);
     root.put("imagePathsPerRow", imagePathsPerRow);
 
@@ -261,7 +295,7 @@ public class HTMLGameBrowser implements GameListener {
       final Game game = pgn.parseGame();
 
       final HTMLGameBrowser html = new HTMLGameBrowser();
-      html.produceHTML(System.out, game);
+      html.produceHtml(System.out, game);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -423,10 +457,11 @@ public class HTMLGameBrowser implements GameListener {
     "  .chesspresso_selected_ply_link { background: black !important; color: white !important; }\n" +
     "</style>";
 
-  public static final String _DEFAULT_STYLE_HTML =
+  public static final String DEFAULT_STYLE_HTML =
    "<link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\" rel=\"stylesheet\" />\n" +
    CHESSPRESSO_STYLE_HTML;
 
-
-
+  public static final String DEFAULT_SCRIPT_HTML =
+    "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\"></script>\n" +
+    "<script src=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js\"></script>";
 }

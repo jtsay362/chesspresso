@@ -1,7 +1,7 @@
 [#ftl]
 [#escape contents as contents?html]
 
-[#if !contentOnly]
+[#if !options.contentOnly]
   <!DOCTYPE html>
   <html>
   <head>
@@ -14,7 +14,7 @@
     </title>
 
     [#noescape]
-    ${styleHtml}
+    ${options.styleHtml}
     [/#noescape]
   </head>
   <body>
@@ -87,8 +87,9 @@
     </div>
   </div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  [#noescape]
+  ${options.scriptHtml!""}
+  [/#noescape]
 
   [#noescape]
   <script type="text/javascript">
@@ -195,7 +196,7 @@
 
   </div>
 
-[#if !contentOnly]
+[#if !options.contentOnly]
   </body>
 </html>
 [/#if]
