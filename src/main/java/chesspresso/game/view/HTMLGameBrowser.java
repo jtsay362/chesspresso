@@ -121,23 +121,6 @@ public class HTMLGameBrowser implements GameListener {
   //======================================================================
 
   /**
-   * Set the name of the style file. If name is set to null, inline style
-   * definition will be used. Default is inline style.<br>
-   * When using an external style file, the following styles are expected:
-   * <ul>
-   * <li>a.main: the anchor used for moves in the main line
-   * <li>a.line: the anchor used for moves in side-lines
-   * <li>span.comment: used for move comments
-   * <li>table.content: the content table containing the board left and the moves on the right
-   * </ul>
-   *
-   * @param styleFilename the name of the style file
-   */
-  private void setStyleFilename(String styleFilename) {
-    m_styleFilename = styleFilename;
-  }
-
-  /**
    * Sets the name of an square image. The default names are set according to
    * the following scheme: First letter is the color of the stone (b, w), second
    * letter the piece (k, q, r, b, n, p) third letter the square color (b, w),
@@ -167,7 +150,7 @@ public class HTMLGameBrowser implements GameListener {
    */
   public void produceHTML(OutputStream outStream, Game game)
    throws Exception {
-    produceHTML(outStream, game, false, false);
+    produceHTML(outStream, game, false, null, false);
   }
 
   /**
@@ -180,6 +163,7 @@ public class HTMLGameBrowser implements GameListener {
    */
   public synchronized void produceHTML(final OutputStream outStream,
                                        final Game game, final boolean contentOnly,
+                                       String styleHtml,
                                        final boolean debugMode)
    throws Exception {
     m_plyModels = new LinkedList<>();
@@ -200,24 +184,13 @@ public class HTMLGameBrowser implements GameListener {
 
     game.traverse(this, true);
 
-    String styleHtml = null;
     List<String> imagePaths = null;
 
-    if (!contentOnly) {
-      if (m_styleFilename == null) {
-        styleHtml = "<style type=\"text/css\">\n" +
-         "   .chesspresso_main { text-decoration:none }\n" +
-         "   .chesspresso_line { text-decoration:none }\n" +
-         "  a.chesspresso_main { font-weight:bold; color:black; }\n" +
-         "  a.chesspresso_line { color:black }\n" +
-         "  span.chesspresso_comment {font-style:italic}\n" +
-         "  .chesspresso_deselected_ply_link { background: white !important; color: black !important; }\n" +
-         "  .chesspresso_selected_ply_link { background: black !important; color: white !important; }\n" +
-         "</style>";
-      } else {
-        styleHtml = "<link rel=\"stylesheet\" href=\"" + m_styleFilename + "\" type=\"text/css\" />";
-      }
+    if (styleHtml == null) {
+      styleHtml = _DEFAULT_STYLE_HTML;
+    }
 
+    if (!contentOnly) {
       imagePaths = new LinkedList<String>();
       for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
         imagePaths.add(getImageForStone(stone, true));
@@ -433,4 +406,18 @@ public class HTMLGameBrowser implements GameListener {
   private String[] m_bimgs;
   private final String m_imagePrefix;
   private String m_styleFilename;
+
+  private static final String _DEFAULT_STYLE_HTML =
+   "<link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\" rel=\"stylesheet\" />\n" +
+    "<style type=\"text/css\">\n" +
+    "  table.chesspresso_board { border-collapse: collapse; }\n" +
+    "  table.chesspresso_board td, { padding : 0; }\n" +
+    "   .chesspresso_main { text-decoration:none }\n" +
+    "   .chesspresso_line { text-decoration:none }\n" +
+    "  a.chesspresso_main { font-weight:bold; color:black; }\n" +
+    "  a.chesspresso_line { color:black }\n" +
+    "  span.chesspresso_comment {font-style:italic}\n" +
+    "  .chesspresso_deselected_ply_link { background: white !important; color: black !important; }\n" +
+    "  .chesspresso_selected_ply_link { background: black !important; color: white !important; }\n" +
+    "</style>";
 }
