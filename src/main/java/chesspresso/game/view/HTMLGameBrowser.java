@@ -236,17 +236,13 @@ public class HTMLGameBrowser implements GameListener {
 
     game.traverse(this, true);
 
-    List<String> imagePaths = null;
+    final List<String> imagePaths = new LinkedList<>();
+    for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
+      imagePaths.add(getImageForStone(stone, true));
+    }
 
-    if (!options.contentOnly) {
-      imagePaths = new LinkedList<String>();
-      for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
-        imagePaths.add(getImageForStone(stone, true));
-      }
-
-      for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
-        imagePaths.add(getImageForStone(stone, false));
-      }
+    for (int stone = Chess.MIN_STONE; stone <= Chess.MAX_STONE; stone++) {
+      imagePaths.add(getImageForStone(stone, false));
     }
 
     final Position startPos = Position.createInitialPosition();
