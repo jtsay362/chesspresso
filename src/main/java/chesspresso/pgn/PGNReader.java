@@ -348,10 +348,12 @@ public final class PGNReader extends PGN {
       if (last == TOK_EOF) return false;  // =====>
       if (last == TOK_TAG_BEGIN) return true;  // =====>
 
+      // [jtsay] Allows for games without headers. Breaks tests.
       if (last == TOK_IDENT) {
         m_logger.debug("Found IDENT");
         return true;
       }
+      // End [jtsay]
 
 
       getNextToken();
@@ -667,6 +669,9 @@ public final class PGNReader extends PGN {
 //1.4        if(m_in == null && m_charBuf == null) return null;
     try {
       m_curGame = null;
+      if (!findNextGameStart()) {
+        return null;
+      }
       m_curGame = new Game();
       m_curGame.setAlwaysAddLine(true);
       initForHeader();

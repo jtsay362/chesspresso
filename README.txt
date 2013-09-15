@@ -13,3 +13,5 @@ This fork has the following improvements:
    * Style and script section customizable
    * Uses Freemarker to generate output so much easier to modify
 
+Known problems:
+ * Due to the change allowing PGN input without headers, PGNReader tests are failing.
