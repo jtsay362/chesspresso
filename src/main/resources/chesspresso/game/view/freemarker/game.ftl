@@ -60,7 +60,8 @@
           [#assign kind = "main" /]
         [/#if]
 
-        <a data-move-number="${ply.moveNumber}"
+        <a id="chesspresso_ply_link_${ply.moveNumber}"
+         data-move-number="${ply.moveNumber}"
          class="chesspresso_ply chesspresso_${kind}" href="#">
           [#if ply.showMoveNumber]
             ${ply.plyNumber / 2 + 1}.
