@@ -155,6 +155,9 @@ public class HTMLGameBrowser implements GameListener {
 
 
   public static class HtmlGenerationOptions {
+    /** Creates an instance that uses Bootstrap 3, with contentOnly false. */
+    public HtmlGenerationOptions() { }
+
     boolean contentOnly = false;
     String styleHtml = DEFAULT_STYLE_HTML;
     String scriptHtml = DEFAULT_SCRIPT_HTML;
@@ -191,6 +194,14 @@ public class HTMLGameBrowser implements GameListener {
     public void setBootstrapMajorVersion(int bootstrapMajorVersion) {
       this.bootstrapMajorVersion = bootstrapMajorVersion;
     }
+  }
+
+  public static HtmlGenerationOptions makeBootstrap2HtmlGenerationOptions() {
+    final HtmlGenerationOptions options = new HtmlGenerationOptions();
+    options.styleHtml = BOOTSTRAP_2_STYLE_HTML + CHESSPRESSO_STYLE_HTML;
+    options.scriptHtml = JQUERY_SCRIPT_HTML + BOOTSTRAP_2_SCRIPT_HTML;
+    options.bootstrapMajorVersion = 2;
+    return options;
   }
 
   /**
@@ -289,13 +300,17 @@ public class HTMLGameBrowser implements GameListener {
       System.exit(0); */
     }
 
+    boolean debugMode = true;
+    HtmlGenerationOptions htmlGenerationOptions = new HtmlGenerationOptions();
+    //htmlGenerationOptions = makeBootstrap2HtmlGenerationOptions();
+
     try {
       chesspresso.pgn.PGNReader pgn = new chesspresso.pgn.PGNReader(
        new FileReader(args[0]), "game");
       final Game game = pgn.parseGame();
 
       final HTMLGameBrowser html = new HTMLGameBrowser();
-      html.produceHtml(System.out, game);
+      html.produceHtml(System.out, game, htmlGenerationOptions, debugMode);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -444,10 +459,10 @@ public class HTMLGameBrowser implements GameListener {
   public static final String CHESSPRESSO_STYLE_HTML =
    "<style type=\"text/css\">\n" +
     "  .chesspresso_centered { margin: 0 auto; }\n" +
-    "  #chesspresso_container { width: 246px; }\n" +
+    "  #chesspresso_container { width: 272px; }\n" +
     "  table.chesspresso_board { border-collapse: collapse; }\n" +
     "  table.chesspresso_board td, { padding : 0; }\n" +
-    "  #chesspresso_tape_control { width: 200px; margin-top: 6px; margin-left: 62px; }\n" +
+    "  #chesspresso_tape_control { margin-top: 6px; text-align: center; }\n" +
     "   .chesspresso_main { text-decoration:none }\n" +
     "   .chesspresso_line { text-decoration:none }\n" +
     "  a.chesspresso_main { font-weight:bold; color:black; }\n" +
@@ -457,11 +472,24 @@ public class HTMLGameBrowser implements GameListener {
     "  .chesspresso_selected_ply_link { background: black !important; color: white !important; }\n" +
     "</style>";
 
+  public static final String BOOTSTRAP_2_STYLE_HTML =
+   "<link href=\"https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\" />\n";
+
+  public static final String BOOTSTRAP_3_STYLE_HTML =
+    "<link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\" rel=\"stylesheet\" />\n";
+
   public static final String DEFAULT_STYLE_HTML =
-   "<link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\" rel=\"stylesheet\" />\n" +
-   CHESSPRESSO_STYLE_HTML;
+   BOOTSTRAP_3_STYLE_HTML + CHESSPRESSO_STYLE_HTML;
+
+  public static final String JQUERY_SCRIPT_HTML =
+   "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\"></script>\n";
+
+  public static final String BOOTSTRAP_2_SCRIPT_HTML =
+   "<script src=\"https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js\"></script>";
+
+  public static final String BOOTSTRAP_3_SCRIPT_HTML =
+    "<script src=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js\"></script>";
 
   public static final String DEFAULT_SCRIPT_HTML =
-    "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js\"></script>\n" +
-    "<script src=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js\"></script>";
+    JQUERY_SCRIPT_HTML + BOOTSTRAP_3_SCRIPT_HTML;
 }

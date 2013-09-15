@@ -1,12 +1,75 @@
 [#ftl]
 [#escape contents as contents?html]
 
+[#assign bv = options.bootstrapMajorVersion /]
+
+[#macro buttonClass]
+  [#if bv = 3]
+    btn btn-sm
+  [#elseif bv = 2]
+    btn btn-small
+  [#else]
+    chesspresso_button
+  [/#if]
+[/#macro]
+
+[#macro bootstrapIconName kind]
+  [#if kind = "start" ][#t]
+    fast-backward[#t]
+  [#elseif kind = "back" ][#t]
+    backward[#t]
+  [#elseif kind = "forward" ][#t]
+    forward[#t]
+  [#elseif kind = "end" ][#t]
+    fast-forward[#t]
+  [/#if][#t]
+[/#macro]
+
+[#macro buttonContents kind]
+  [#if bv = 3]
+    <span class="glyphicon glyphicon-[@bootstrapIconName kind /]" />
+  [#elseif bv = 2]
+    <i class="icon-[@bootstrapIconName kind /]" ></i>
+  [#else]
+    [#if kind = "start" ]
+      Start
+    [#elseif kind = "back" ]
+      &lt;
+    [#elseif kind = "forward" ]
+      &gt;
+    [#elseif kind = "end" ]
+      End
+    [#else]
+      ?
+    [/#if]
+  [/#if]
+[/#macro]
+
+[#macro columnClass numColumns]
+  [#compress]
+  [#if bv = 3]
+    col-md-${numColumns}
+  [#elseif bv = 2]
+    span${numColumns}
+  [#else]
+    bootstrap-col-${numColumns}
+  [/#if]
+  [/#compress]
+[/#macro]
+
+[#macro button kind]
+  <button id="chesspresso_${kind}_button" type="button" class="[@buttonClass /]" >
+    [@buttonContents kind /]
+  </button>
+[/#macro]
+
 [#if !options.contentOnly]
   <!DOCTYPE html>
   <html>
   <head>
     <meta charset="UTF-8" >
     <meta name="generator" content="Chesspresso" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
     [#if game.white??]
       ${game.toString()}
@@ -20,9 +83,9 @@
   <body>
 [/#if]
 
-<div class="chesspresso_content">
-  <div class="row">
-    <div class="col-md-3">
+<div class="container-fluid chesspresso_content">
+  <div class="row-fluid">
+    <div class="[@columnClass 4 /]">
       <div id="chesspresso_container" class="chesspresso_centered">
         <table class="chesspresso_board"><thead></thead>
           <tbody>
@@ -39,19 +102,20 @@
         </table>
 
         <div id="chesspresso_tape_control" class="chesspresso_centered" >
-          <button id="chesspresso_start_button" type="button" class="btn btn-sm" ><span class="glyphicon glyphicon-fast-backward" /></button>
-          <button id="chesspresso_back_button" type="button" class="btn btn-sm" ><span class="glyphicon glyphicon-backward" /></button>
-          <button id="chesspresso_forward_button" type="button" class="btn btn-sm" ><span class="glyphicon glyphicon-forward" /></button>
-          <button id="chesspresso_end_button" type="button" class="btn btn-sm" ><span class="glyphicon glyphicon-fast-forward" /></button>
+          [@button kind="start" /]
+          [@button kind="back" /]
+          [@button kind="forward" /]
+          [@button kind="end" /]
         </div>
       </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="[@columnClass 8 /]">
       [#if game.white??]
         <h4>${game.toString()}</h4>
       [/#if]
 
+      [#compress]
       [#list plys as ply]
         [#if ply.lineStart]&nbsp;([/#if]
 
@@ -79,8 +143,8 @@
         [/#if]
 
         [#if ply.lineEnd]&nbsp;[/#if]
-
       [/#list]
+      [/#compress]
 
       [#if game.resultStr??]
         ${game.resultStr}
@@ -97,40 +161,46 @@
     // <![CDATA[
     var Chesspresso = function() {
       this.moveNumber = 0;
+      [#compress]
       this.imgs = [
-        [#assign isFirst = true /][#t]
-        [#list imagePaths as imagePath][#t]
-          [#if isFirst][#t]
-            [#assign isFirst = false /][#t]
+        [#assign isFirst = true /]
+        [#list imagePaths as imagePath]
+          [#if isFirst]
+            [#assign isFirst = false /]
           [#else]
-            ,[#t]
-          [/#if][#t]
-          '${imagePath?js_string}'[#t]
-        [/#list][#t]
+            ,
+          [/#if]
+          '${imagePath?js_string}'
+        [/#list]
       ];
+      [/#compress]
 
+      [#compress]
       this.sq = [
         [#assign i = 0 /]
         [#list posData as pos]
-          [#if i != 0],[/#if][#t]
+          [#if i != 0],[/#if]
           [
-            [#assign j = 0 /][#t]
-            [#list pos as p][#t]
-              [#if j != 0],[/#if]${p}[#t]
-              [#assign j = j + 1 /][#t]
-            [/#list][#t]
+            [#assign j = 0 /]
+            [#list pos as p]
+              [#if j != 0],[/#if]${p}
+              [#assign j = j + 1 /]
+            [/#list]
           ]
-          [#assign i = i + 1 /][#t]
+          [#assign i = i + 1 /]
         [/#list]
       ];
+      [/#compress]
 
+      [#compress]
       this.last = [
-        [#assign j = 0 /][#t]
-        [#list lastData as p][#t]
-          [#if j != 0],[/#if]${p}[#t]
-          [#assign j = j + 1 /][#t]
-        [/#list][#t]
+        [#assign j = 0 /]
+        [#list lastData as p]
+          [#if j != 0],[/#if]${p}
+          [#assign j = j + 1 /]
+        [/#list]
       ];
+      [/#compress]
 
       this.lastMoveNumber = ${lastMoveNumber};
     };
@@ -152,16 +222,21 @@
     Chesspresso.prototype.go = function (num) {
       this.highlightPly(false);
 
-      if (num<0) this.moveNumber=0;
-      else if (num > this.lastMoveNumber) this.moveNumber = this.lastMoveNumber;
-      else this.moveNumber = num;
-      for(var i=0;i<64;i++){
+      if (num < 0) {
+        this.moveNumber=0;
+      } else if (num > this.lastMoveNumber) {
+        this.moveNumber = this.lastMoveNumber;
+      } else {
+        this.moveNumber = num;
+      }
+
+      this.highlightPly(true);
+
+      for(var i = 0; i < 64; i++){
         var offset = 0;
         if ((Math.floor(i/8)%2)==(i%2)) offset=0; else offset=13;
         $('#chesspresso_square_image_' + i).attr('src', this.imgs[this.sq[num][i]+offset]);
       }
-
-      this.highlightPly(true);
     }
     Chesspresso.prototype.gotoStart = function() {this.go(0);}
     Chesspresso.prototype.goBackward = function() {this.go(this.last[this.moveNumber]);}
