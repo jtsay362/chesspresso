@@ -115,7 +115,6 @@ public class HTMLGameBrowser implements GameListener {
      "bnb.gif", "bbb.gif", "brb.gif", "bqb.gif", "bpb.gif", "bkb.gif"
     };
     m_imagePrefix = StringUtils.trimToEmpty(imagePrefix);
-    m_styleFilename = null;
   }
 
   //======================================================================
@@ -454,7 +453,6 @@ public class HTMLGameBrowser implements GameListener {
   private String[] m_wimgs;
   private String[] m_bimgs;
   private final String m_imagePrefix;
-  private String m_styleFilename;
 
   public static final String CHESSPRESSO_STYLE_HTML =
    "<style type=\"text/css\">\n" +
