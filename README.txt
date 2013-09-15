@@ -9,6 +9,7 @@ This fork has the following improvements:
    * HTML5 output
    * Safer output (HTML escapes content in game before outputting)
    * Less polution of the Javascript environment, HTML ID's, and CSS class namespace
-   * Uses Bootstrap 3 for fonts, buttons, etc.
+   * Uses Bootstrap 2 or 3 for fonts, buttons, etc.
+   * Style and script section customizable
    * Uses Freemarker to generate output so much easier to modify
 
