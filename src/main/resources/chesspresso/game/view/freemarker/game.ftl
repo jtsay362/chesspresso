@@ -86,6 +86,12 @@
 [/#if]
 
 <div class="container-fluid chesspresso_content">
+  [#if options.contentOnly]
+    [#noescape]
+    ${options.styleHtml}
+    [/#noescape]
+  [/#if]
+
   <div class="row-fluid">
     <div class="[@columnClass 4 /]">
       <div id="chesspresso_container" class="chesspresso_centered">
