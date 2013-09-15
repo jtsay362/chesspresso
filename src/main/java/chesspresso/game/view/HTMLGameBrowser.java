@@ -161,32 +161,16 @@ public class HTMLGameBrowser implements GameListener {
       return contentOnly;
     }
 
-    public void setContentOnly(boolean contentOnly) {
-      this.contentOnly = contentOnly;
-    }
-
     public String getStyleHtml() {
       return styleHtml;
-    }
-
-    public void setStyleHtml(String styleHtml) {
-      this.styleHtml = styleHtml;
     }
 
     public String getScriptHtml() {
       return scriptHtml;
     }
 
-    public void setScriptHtml(String scriptHtml) {
-      this.scriptHtml = scriptHtml;
-    }
-
     public int getBootstrapMajorVersion() {
       return bootstrapMajorVersion;
-    }
-
-    public void setBootstrapMajorVersion(int bootstrapMajorVersion) {
-      this.bootstrapMajorVersion = bootstrapMajorVersion;
     }
 
     public String getImagePrefix() {
@@ -333,73 +317,36 @@ public class HTMLGameBrowser implements GameListener {
       return lineStart;
     }
 
-    public void setLineStart(boolean lineStart) {
-      this.lineStart = lineStart;
-    }
-
     public boolean getLineEnd() {
       return lineEnd;
-    }
-
-    public void setLineEnd(boolean lineEnd) {
-      this.lineEnd = lineEnd;
     }
 
     public int getPlyNumber() {
       return plyNumber;
     }
 
-    public void setPlyNumber(int plyNumber) {
-      this.plyNumber = plyNumber;
-    }
-
-
     public boolean isShowMoveNumber() {
       return showMoveNumber;
-    }
-
-    public void setShowMoveNumber(boolean showMoveNumber) {
-      this.showMoveNumber = showMoveNumber;
     }
 
     public int getMoveNumber() {
       return moveNumber;
     }
 
-    public void setMoveNumber(int moveNumber) {
-      this.moveNumber = moveNumber;
-    }
-
     public int getLevel() {
       return level;
-    }
-
-    public void setLevel(int level) {
-      this.level = level;
     }
 
     public Move getMove() {
       return move;
     }
 
-    public void setMove(Move move) {
-      this.move = move;
-    }
-
     public List<String> getNags() {
       return nags;
     }
 
-    public void setNags(List<String> nags) {
-      this.nags = nags;
-    }
-
     public String getComment() {
       return comment;
-    }
-
-    public void setComment(String comment) {
-      this.comment = comment;
     }
 
     @Override
