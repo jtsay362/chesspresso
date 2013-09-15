@@ -5,8 +5,8 @@
   <!DOCTYPE html>
   <html>
   <head>
-    <meta name="generator" content="Chesspresso" />
-
+    <meta charset="UTF-8" >
+    <meta name="generator" content="Chesspresso" >
     <title>
     [#if game.white??]
       ${game.toString()}
@@ -30,7 +30,7 @@
             [#list imagePathsPerRow as imagePathsForRow]
             <tr>
               [#list imagePathsForRow as imagePath]
-                <td><img id="chesspresso_square_image_${imageCount}" src="${imagePath}" /></td>
+                <td><img id="chesspresso_square_image_${imageCount}" src="${imagePath}" alt="${imageCount}" /></td>
                 [#assign imageCount = imageCount + 1 /]
               [/#list]
             </tr>
