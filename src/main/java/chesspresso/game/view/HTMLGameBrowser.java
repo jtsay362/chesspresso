@@ -406,11 +406,11 @@ public class HTMLGameBrowser implements GameListener {
     "  table.chesspresso_board { border-collapse: collapse; }\n" +
     "  table.chesspresso_board td, { padding : 0; }\n" +
     "  #chesspresso_tape_control { margin-top: 6px; text-align: center; }\n" +
-    "   .chesspresso_main { text-decoration:none }\n" +
-    "   .chesspresso_line { text-decoration:none }\n" +
-    "  a.chesspresso_main { font-weight:bold; color:black; }\n" +
-    "  a.chesspresso_line { color:black }\n" +
-    "  span.chesspresso_comment {font-style:italic}\n" +
+    "   .chesspresso_main { text-decoration: none }\n" +
+    "   .chesspresso_line { text-decoration: none }\n" +
+    "  a.chesspresso_main { font-weight: bold; color: black; }\n" +
+    "  a.chesspresso_line { color: black; }\n" +
+    "  span.chesspresso_comment { font-style: italic; }\n" +
     "  .chesspresso_deselected_ply_link { background: white !important; color: black !important; }\n" +
     "  .chesspresso_selected_ply_link { background: black !important; color: white !important; }\n" +
     "</style>";
