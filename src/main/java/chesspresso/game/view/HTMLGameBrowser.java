@@ -101,11 +101,6 @@ public class HTMLGameBrowser implements GameListener {
    * Create a new HTMLGameBrowser with default settings.
    */
   public HTMLGameBrowser() {
-    this("");
-  }
-
-
-  public HTMLGameBrowser(final String imagePrefix) {
     m_wimgs = new String[]{
      "wkw.gif", "wpw.gif", "wqw.gif", "wrw.gif", "wbw.gif", "wnw.gif", "now.gif",
      "bnw.gif", "bbw.gif", "brw.gif", "bqw.gif", "bpw.gif", "bkw.gif"
@@ -114,7 +109,6 @@ public class HTMLGameBrowser implements GameListener {
      "wkb.gif", "wpb.gif", "wqb.gif", "wrb.gif", "wbb.gif", "wnb.gif", "nob.gif",
      "bnb.gif", "bbb.gif", "brb.gif", "bqb.gif", "bpb.gif", "bkb.gif"
     };
-    m_imagePrefix = StringUtils.trimToEmpty(imagePrefix);
   }
 
   //======================================================================
@@ -161,6 +155,7 @@ public class HTMLGameBrowser implements GameListener {
     String styleHtml = DEFAULT_STYLE_HTML;
     String scriptHtml = DEFAULT_SCRIPT_HTML;
     int bootstrapMajorVersion = 3;
+    String imagePrefix = "";
 
     public boolean isContentOnly() {
       return contentOnly;
@@ -192,6 +187,10 @@ public class HTMLGameBrowser implements GameListener {
 
     public void setBootstrapMajorVersion(int bootstrapMajorVersion) {
       this.bootstrapMajorVersion = bootstrapMajorVersion;
+    }
+
+    public String getImagePrefix() {
+      return imagePrefix;
     }
   }
 
@@ -302,6 +301,7 @@ public class HTMLGameBrowser implements GameListener {
     boolean debugMode = true;
     HtmlGenerationOptions htmlGenerationOptions = new HtmlGenerationOptions();
     //htmlGenerationOptions = makeBootstrap2HtmlGenerationOptions();
+    //htmlGenerationOptions.imagePrefix = "ugly/";
 
     try {
       chesspresso.pgn.PGNReader pgn = new chesspresso.pgn.PGNReader(
@@ -425,7 +425,7 @@ public class HTMLGameBrowser implements GameListener {
    * @param whiteSquare whether or not the square is white
    */
   private String getImageForStone(int stone, boolean isWhite) {
-    return m_imagePrefix + (isWhite ? m_wimgs[stone - Chess.MIN_STONE] : m_bimgs[stone - Chess.MIN_STONE]);
+    return (isWhite ? m_wimgs[stone - Chess.MIN_STONE] : m_bimgs[stone - Chess.MIN_STONE]);
   }
 
   private void addPosData(ImmutablePosition pos) {
@@ -452,7 +452,6 @@ public class HTMLGameBrowser implements GameListener {
   private int[] m_lasts;
   private String[] m_wimgs;
   private String[] m_bimgs;
-  private final String m_imagePrefix;
 
   public static final String CHESSPRESSO_STYLE_HTML =
    "<style type=\"text/css\">\n" +

@@ -3,6 +3,8 @@
 
 [#assign bv = options.bootstrapMajorVersion /]
 
+[#assign imagePrefix = options.imagePrefix!"" /]
+
 [#macro buttonClass]
   [#if bv = 3]
     btn btn-sm
@@ -93,7 +95,7 @@
             [#list imagePathsPerRow as imagePathsForRow]
             <tr>
               [#list imagePathsForRow as imagePath]
-                <td><img id="chesspresso_square_image_${imageCount}" src="${imagePath}" alt="${imageCount}" /></td>
+                <td><img id="chesspresso_square_image_${imageCount}" src="${imagePrefix + imagePath}" alt="${imageCount}" /></td>
                 [#assign imageCount = imageCount + 1 /]
               [/#list]
             </tr>
@@ -170,7 +172,7 @@
           [#else]
             ,
           [/#if]
-          '${imagePath?js_string}'
+          '${(imagePrefix + imagePath)?js_string}'
         [/#list]
       ];
       [/#compress]
