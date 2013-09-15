@@ -161,113 +161,115 @@
   [#noescape]
   <script type="text/javascript">
     // <![CDATA[
-    var Chesspresso = function() {
-      this.moveNumber = 0;
-      [#compress]
-      this.imgs = [
-        [#assign isFirst = true /]
-        [#list imagePaths as imagePath]
-          [#if isFirst]
-            [#assign isFirst = false /]
-          [#else]
-            ,
-          [/#if]
-          '${(imagePrefix + imagePath)?js_string}'
-        [/#list]
-      ];
-      [/#compress]
+    jQuery(document).ready(function ($) {
+      var Chesspresso = function() {
+        this.moveNumber = 0;
+        [#compress]
+        this.imgs = [
+          [#assign isFirst = true /]
+          [#list imagePaths as imagePath]
+            [#if isFirst]
+              [#assign isFirst = false /]
+            [#else]
+              ,
+            [/#if]
+            '${(imagePrefix + imagePath)?js_string}'
+          [/#list]
+        ];
+        [/#compress]
 
-      [#compress]
-      this.sq = [
-        [#assign i = 0 /]
-        [#list posData as pos]
-          [#if i != 0],[/#if]
-          [
-            [#assign j = 0 /]
-            [#list pos as p]
-              [#if j != 0],[/#if]${p}
-              [#assign j = j + 1 /]
-            [/#list]
-          ]
-          [#assign i = i + 1 /]
-        [/#list]
-      ];
-      [/#compress]
+        [#compress]
+        this.sq = [
+          [#assign i = 0 /]
+          [#list posData as pos]
+            [#if i != 0],[/#if]
+            [
+              [#assign j = 0 /]
+              [#list pos as p]
+                [#if j != 0],[/#if]${p}
+                [#assign j = j + 1 /]
+              [/#list]
+            ]
+            [#assign i = i + 1 /]
+          [/#list]
+        ];
+        [/#compress]
 
-      [#compress]
-      this.last = [
-        [#assign j = 0 /]
-        [#list lastData as p]
-          [#if j != 0],[/#if]${p}
-          [#assign j = j + 1 /]
-        [/#list]
-      ];
-      [/#compress]
+        [#compress]
+        this.last = [
+          [#assign j = 0 /]
+          [#list lastData as p]
+            [#if j != 0],[/#if]${p}
+            [#assign j = j + 1 /]
+          [/#list]
+        ];
+        [/#compress]
 
-      this.lastMoveNumber = ${lastMoveNumber};
-    };
+        this.lastMoveNumber = ${lastMoveNumber};
+      };
 
-    Chesspresso.prototype.highlightPly = function (selected) {
-      if (this.moveNumber > 0) {
-        var element = $('#chesspresso_ply_link_' + this.moveNumber);
+      Chesspresso.prototype.highlightPly = function (selected) {
+        if (this.moveNumber > 0) {
+          var element = $('#chesspresso_ply_link_' + this.moveNumber);
 
-        if (selected) {
-          element.removeClass('chesspresso_deselected_ply_link');
-          element.addClass('chesspresso_selected_ply_link');
-        } else {
-          element.removeClass('chesspresso_selected_ply_link');
-          element.addClass('chesspresso_deselected_ply_link');
+          if (selected) {
+            element.removeClass('chesspresso_deselected_ply_link');
+            element.addClass('chesspresso_selected_ply_link');
+          } else {
+            element.removeClass('chesspresso_selected_ply_link');
+            element.addClass('chesspresso_deselected_ply_link');
+          }
         }
       }
-    }
 
-    Chesspresso.prototype.go = function (num) {
-      this.highlightPly(false);
+      Chesspresso.prototype.go = function (num) {
+        this.highlightPly(false);
 
-      if (num < 0) {
-        this.moveNumber=0;
-      } else if (num > this.lastMoveNumber) {
-        this.moveNumber = this.lastMoveNumber;
-      } else {
-        this.moveNumber = num;
+        if (num < 0) {
+          this.moveNumber=0;
+        } else if (num > this.lastMoveNumber) {
+          this.moveNumber = this.lastMoveNumber;
+        } else {
+          this.moveNumber = num;
+        }
+
+        this.highlightPly(true);
+
+        for(var i = 0; i < 64; i++){
+          var offset = 0;
+          if ((Math.floor(i/8)%2)==(i%2)) offset=0; else offset=13;
+          $('#chesspresso_square_image_' + i).attr('src', this.imgs[this.sq[num][i]+offset]);
+        }
       }
+      Chesspresso.prototype.gotoStart = function() {this.go(0);}
+      Chesspresso.prototype.goBackward = function() {this.go(this.last[this.moveNumber]);}
+      Chesspresso.prototype.goForward = function() {for (var i=this.lastMoveNumber + 1; i>this.moveNumber; i--) if (this.last[i]==this.moveNumber) {this.go(i); break;}}
+      Chesspresso.prototype.gotoEnd = function() {this.go(this.lastMoveNumber);}
 
-      this.highlightPly(true);
+      var chesspresso = new Chesspresso();
 
-      for(var i = 0; i < 64; i++){
-        var offset = 0;
-        if ((Math.floor(i/8)%2)==(i%2)) offset=0; else offset=13;
-        $('#chesspresso_square_image_' + i).attr('src', this.imgs[this.sq[num][i]+offset]);
-      }
-    }
-    Chesspresso.prototype.gotoStart = function() {this.go(0);}
-    Chesspresso.prototype.goBackward = function() {this.go(this.last[this.moveNumber]);}
-    Chesspresso.prototype.goForward = function() {for (var i=this.lastMoveNumber + 1; i>this.moveNumber; i--) if (this.last[i]==this.moveNumber) {this.go(i); break;}}
-    Chesspresso.prototype.gotoEnd = function() {this.go(this.lastMoveNumber);}
+      $('#chesspresso_start_button').click(function() {
+        chesspresso.gotoStart();
+      });
 
-    $('#chesspresso_start_button').click(function() {
-      chesspresso.gotoStart();
+      $('#chesspresso_back_button').click(function() {
+        chesspresso.goBackward();
+      });
+
+      $('#chesspresso_forward_button').click(function() {
+        chesspresso.goForward();
+      });
+
+      $('#chesspresso_end_button').click(function() {
+        chesspresso.gotoEnd();
+      });
+
+      $('.chesspresso_ply').click(function(e) {
+        var moveNumber = $(this).attr('data-move-number');
+        chesspresso.go(parseInt(moveNumber));
+        e.preventDefault();
+      });
     });
-
-    $('#chesspresso_back_button').click(function() {
-      chesspresso.goBackward();
-    });
-
-    $('#chesspresso_forward_button').click(function() {
-      chesspresso.goForward();
-    });
-
-    $('#chesspresso_end_button').click(function() {
-      chesspresso.gotoEnd();
-    });
-
-    $('.chesspresso_ply').click(function(e) {
-      var moveNumber = $(this).attr('data-move-number');
-      chesspresso.go(parseInt(moveNumber));
-      e.preventDefault();
-    });
-
-    var chesspresso = new Chesspresso();
     // ]]>
   </script>
   [/#noescape]
