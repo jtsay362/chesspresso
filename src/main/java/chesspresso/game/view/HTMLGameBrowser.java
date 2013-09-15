@@ -415,9 +415,8 @@ public class HTMLGameBrowser implements GameListener {
   private String[] m_wimgs;
   private String[] m_bimgs;
 
-  public static final String CHESSPRESSO_STYLE_HTML =
-   "<style type=\"text/css\">\n" +
-    "  .chesspresso_centered { margin: 0 auto; }\n" +
+  public static final String CHESSPRESSO_CSS =
+   "  .chesspresso_centered { margin: 0 auto; }\n" +
     "  #chesspresso_container { width: 272px; }\n" +
     "  table.chesspresso_board { border-collapse: collapse; }\n" +
     "  table.chesspresso_board td, { padding : 0; }\n" +
@@ -428,8 +427,14 @@ public class HTMLGameBrowser implements GameListener {
     "  a.chesspresso_line { color: black; }\n" +
     "  span.chesspresso_comment { font-style: italic; }\n" +
     "  .chesspresso_deselected_ply_link { background: white !important; color: black !important; }\n" +
-    "  .chesspresso_selected_ply_link { background: black !important; color: white !important; }\n" +
-    "</style>";
+    "  .chesspresso_selected_ply_link { background: black !important; color: white !important; }\n";
+
+  public static final String CHESSPRESSO_STYLE_HTML =
+    "<style type=\"text/css\">\n" + CHESSPRESSO_CSS + "</style>\n";
+
+  public static final String CHESSPRESSO_SCOPED_STYLE_HTML =
+   "<style scoped type=\"text/css\">\n" + CHESSPRESSO_CSS + "</style>\n";
+
 
   public static final String BOOTSTRAP_2_STYLE_HTML =
    "<link href=\"https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\" />\n";
