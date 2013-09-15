@@ -274,12 +274,11 @@ public class HTMLGameBrowser implements GameListener {
 
   public static void main(String[] args) {
     if (args.length < 1) {
-      args = new String[]{ "fischer.pgn" };
+      //args = new String[]{ "fischer_plain.pgn" };
 
-      /*
       System.out.println("Usage: java " + HTMLGameBrowser.class.getName() +
        " <PGN filename>");
-      System.exit(0); */
+      System.exit(0);
     }
 
     boolean debugMode = true;
