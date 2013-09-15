@@ -176,6 +176,26 @@ public class HTMLGameBrowser implements GameListener {
     public String getImagePrefix() {
       return imagePrefix;
     }
+
+    public void setContentOnly(boolean contentOnly) {
+      this.contentOnly = contentOnly;
+    }
+
+    public void setStyleHtml(String styleHtml) {
+      this.styleHtml = styleHtml;
+    }
+
+    public void setScriptHtml(String scriptHtml) {
+      this.scriptHtml = scriptHtml;
+    }
+
+    public void setBootstrapMajorVersion(int bootstrapMajorVersion) {
+      this.bootstrapMajorVersion = bootstrapMajorVersion;
+    }
+
+    public void setImagePrefix(String imagePrefix) {
+      this.imagePrefix = imagePrefix;
+    }
   }
 
   public static HtmlGenerationOptions makeBootstrap2HtmlGenerationOptions() {
