@@ -6,7 +6,6 @@ out/
 .classpath
 .project
 .settings/
-gradle/
 .idea/
 *.iml
 
