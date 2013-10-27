@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jtsay362/chesspresso.png?branch=master)](https://travis-ci.org/jtsay362/chesspresso)
+
 This was forked from Chesspresso 0.9.2, originally written by Bernhard Seybold.
 His original docs are at: http://www.chesspresso.org/
 
