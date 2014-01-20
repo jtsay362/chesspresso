@@ -232,12 +232,12 @@
         this.highlightPly(false);
 
         if (num < 0) {
-          this.moveNumber=0;
+          num += (this.lastMoveNumber + 1);
         } else if (num > this.lastMoveNumber) {
-          this.moveNumber = this.lastMoveNumber;
-        } else {
-          this.moveNumber = num;
+          num = this.lastMoveNumber;
         }
+
+        this.moveNumber = num;
 
         this.highlightPly(true);
 
@@ -275,6 +275,8 @@
         chesspresso.go(parseInt(moveNumber));
         e.preventDefault();
       });
+
+      chesspresso.go(${options.moveNumberToDisplay});
     });
     // ]]>
   </script>

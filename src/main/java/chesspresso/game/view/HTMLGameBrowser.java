@@ -156,6 +156,7 @@ public class HTMLGameBrowser implements GameListener {
     String scriptHtml = DEFAULT_SCRIPT_HTML;
     int bootstrapMajorVersion = 3;
     String imagePrefix = "";
+    int moveNumberToDisplay = -1;
 
     public boolean isContentOnly() {
       return contentOnly;
@@ -177,6 +178,8 @@ public class HTMLGameBrowser implements GameListener {
       return imagePrefix;
     }
 
+    public int getMoveNumberToDisplay() { return moveNumberToDisplay; }
+
     public void setContentOnly(boolean contentOnly) {
       this.contentOnly = contentOnly;
     }
@@ -196,6 +199,8 @@ public class HTMLGameBrowser implements GameListener {
     public void setImagePrefix(String imagePrefix) {
       this.imagePrefix = imagePrefix;
     }
+
+    public void setMoveNumbeToDisplayr(int moveNumber) { this.moveNumberToDisplay = moveNumber; }
   }
 
   public static HtmlGenerationOptions makeBootstrap2HtmlGenerationOptions() {
@@ -290,11 +295,12 @@ public class HTMLGameBrowser implements GameListener {
 
   public static void main(String[] args) {
     if (args.length < 1) {
-      //args = new String[]{ "fischer_plain.pgn" };
+      args = new String[]{ "fischer_plain.pgn" };
 
+      /*
       System.out.println("Usage: java " + HTMLGameBrowser.class.getName() +
        " <PGN filename>");
-      System.exit(0);
+      System.exit(0); */
     }
 
     boolean debugMode = true;
@@ -434,7 +440,6 @@ public class HTMLGameBrowser implements GameListener {
 
   public static final String CHESSPRESSO_SCOPED_STYLE_HTML =
    "<style scoped type=\"text/css\">\n" + CHESSPRESSO_CSS + "</style>\n";
-
 
   public static final String BOOTSTRAP_2_STYLE_HTML =
    "<link href=\"https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\" />\n";
