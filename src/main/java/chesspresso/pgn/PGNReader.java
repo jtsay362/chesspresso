@@ -583,7 +583,7 @@ public final class PGNReader extends PGN {
     if (needsMoveNumber) {
       if (!isLastTokenMoveNumber(m_curGame.getNextMoveNumber())) {
 
-        warning("Wrong move number, " + m_curGame.getNextMoveNumber() + " expected");
+        syntaxError("Wrong move number, " + m_curGame.getNextMoveNumber() + " expected");
       }
       if (getNextToken() == TOK_PERIOD) {
         if (m_curGame.getPosition().getToPlay() == Chess.BLACK && (getNextToken() != TOK_PERIOD || getNextToken() != TOK_PERIOD)) {
