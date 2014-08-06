@@ -445,7 +445,7 @@ public class HTMLGameBrowser implements GameListener {
    "<link href=\"https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\" />\n";
 
   public static final String BOOTSTRAP_3_STYLE_HTML =
-    "<link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css\" rel=\"stylesheet\" />\n";
+    "<link href=\"https://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css\" rel=\"stylesheet\" />\n";
 
   public static final String DEFAULT_STYLE_HTML =
    BOOTSTRAP_3_STYLE_HTML + CHESSPRESSO_STYLE_HTML;
@@ -457,7 +457,7 @@ public class HTMLGameBrowser implements GameListener {
    "<script src=\"https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js\"></script>";
 
   public static final String BOOTSTRAP_3_SCRIPT_HTML =
-    "<script src=\"https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js\"></script>";
+    "<script src=\"https://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js\"></script>";
 
   public static final String DEFAULT_SCRIPT_HTML =
     JQUERY_SCRIPT_HTML + BOOTSTRAP_3_SCRIPT_HTML;
